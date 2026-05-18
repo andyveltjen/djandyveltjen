@@ -1,1 +1,1 @@
-Stuur uw aanvraag en ik reageer binnen 24 uur.
+Stuur uw aanvraag en ik reageer asap.
