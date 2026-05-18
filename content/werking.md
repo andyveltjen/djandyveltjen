@@ -1,25 +1,25 @@
 ## stap1-titel
-Vrijblijvende afspraak
+Vrijblijvende kennismaking
 
 ## stap1-tekst
-We ontmoeten elkaar voor een persoonlijk gesprek – online of bij u thuis. U stelt vragen, ik luister. Geen enkele verplichting.
+We plannen een vrijblijvend online of telefonish gesprek in. We leren elkaar kennen, bespreken je wensen en bekijken samen of er een goede match is. Zonder verplichtingen.
 
 ## stap2-titel
 Muziek & draaiboek
 
 ## stap2-tekst
-Muziek en draaiboek worden in detail besproken. Uw favorieten, de sfeer per moment van de avond – alles op papier gezet.
+Gaan we samen verder? Dan plannen we een uitgebreid gesprek in, online of bij u thuis. We bespreken de muziek, sfeer en planning van de avond, waarna ik aan de slag ga met de volledige voorbereiding.
 
 ## stap3-titel
 Volledig uit handen
 
 ## stap3-tekst
-Geluid, licht en deejay zijn volledig uit handen. Op de dag zelf regelt u niets – u geniet, ik zorg voor de rest.
+Geluid, licht en muziek worden volledig geregeld. Op de dag zelf hoef je nergens aan te denken. Jij geniet van het feest, ik zorg voor de rest.
 
 ## allin-titel
 Alles onder één dak
 
 ## allin-tekst
-Geen gedoe met verschillende leveranciers. Deejay, professioneel geluid én een complete lichtshow – volledig gecoördineerd door één persoon, voor één overzichtelijke prijs.
+Geen gedoe met verschillende leveranciers. Deejay, professioneel geluid én een complete lichtshow. Volledig gecoördineerd door één persoon, voor één overzichtelijke prijs.
 
-Zo houdt u de handen vrij voor wat écht telt: genieten van uw feest.
+Zo houd je de handen vrij voor wat écht telt: genieten van je feest.
