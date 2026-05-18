@@ -714,7 +714,7 @@
             - Formspree: voeg action="https://formspree.io/f/YOUR_ID" toe
             - Netlify:   voeg data-netlify="true" toe aan het <form>-element
         -->
-        <form id="contact-form" class="space-y-5">
+        <form id="contact-form" action="https://formspree.io/f/meedoalq" method="POST" class="space-y-5">
 
           <div class="grid grid-cols-2 gap-5">
             <div>
@@ -1097,12 +1097,30 @@
 
   // ── Contactformulier (demo-modus: toont succesmelding)
   //    Koppel aan Formspree of Netlify Forms voor echte e-mailverzending (zie README).
-  document.getElementById('contact-form').addEventListener('submit', e => {
+  document.getElementById('contact-form').addEventListener('submit', async e => {
     e.preventDefault();
-    const ok = document.getElementById('form-success');
-    ok.classList.remove('hidden');
-    e.target.reset();
-    setTimeout(() => ok.classList.add('hidden'), 7000);
+    const form = e.target;
+    const btn  = form.querySelector('button[type="submit"]');
+    btn.textContent = 'Versturen…';
+    btn.disabled = true;
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' },
+      });
+      if (res.ok) {
+        document.getElementById('form-success').classList.remove('hidden');
+        form.reset();
+        setTimeout(() => document.getElementById('form-success').classList.add('hidden'), 7000);
+      } else {
+        alert('Er liep iets mis. Probeer opnieuw of stuur een e-mail naar info@andyveltjen.be');
+      }
+    } catch {
+      alert('Geen verbinding. Probeer opnieuw.');
+    }
+    btn.textContent = 'Verstuur aanvraag';
+    btn.disabled = false;
   });
 
 })();
