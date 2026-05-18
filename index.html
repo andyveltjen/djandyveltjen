@@ -24,7 +24,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- marked.js – markdown parser for content/*.md files -->
   <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
@@ -35,6 +35,7 @@
       --pink:      #E8177A;
       --pink-hover:#f04898;
       --dark:      #2D2D2D;
+      --cream:     #FAF8F6;
     }
 
     /* ── Scroll-reveal */
@@ -96,6 +97,80 @@
       box-shadow: 0 0 0 3px rgba(232,23,122,.15);
     }
 
+    /* ── Animated EQ logo (navbar) — replicates logo layout: bars above, wordmark below */
+    @keyframes navEq {
+      0%, 100% { transform: scaleY(.35); }
+      50%      { transform: scaleY(1); }
+    }
+    .nav-logo {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      line-height: 1;
+    }
+    .nav-eq {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 18px;
+    }
+    .nav-eq .bar {
+      display: inline-block;
+      width: 3px;
+      border-radius: 1px;
+      transform-origin: bottom;
+      animation: navEq 1.2s ease-in-out infinite;
+      background: var(--dark);
+    }
+    .nav-eq .bar.pink { background: var(--pink); }
+    .nav-eq .bar:nth-child(1) { height: 6px;  animation-delay: 0s;   }
+    .nav-eq .bar:nth-child(2) { height: 12px; animation-delay: .15s; }
+    .nav-eq .bar:nth-child(3) { height: 8px;  animation-delay: .30s; }
+    .nav-eq .bar:nth-child(4) { height: 16px; animation-delay: .10s; }
+    .nav-eq .bar:nth-child(5) { height: 10px; animation-delay: .25s; }
+    .nav-eq .bar:nth-child(6) { height: 14px; animation-delay: .05s; }
+    .nav-wordmark {
+      font-family: 'Quicksand', system-ui, sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0;
+      color: var(--dark);
+      text-transform: lowercase;
+    }
+
+    /* ── Static footer EQ bars (white, beside the wordmark) */
+    .footer-eq {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 26px;
+    }
+    .footer-eq .bar {
+      display: inline-block;
+      width: 3px;
+      border-radius: 1px;
+      background: #ffffff;
+    }
+    .footer-eq .bar:nth-child(1) { height: 8px;  }
+    .footer-eq .bar:nth-child(2) { height: 16px; }
+    .footer-eq .bar:nth-child(3) { height: 12px; }
+    .footer-eq .bar:nth-child(4) { height: 22px; }
+    .footer-eq .bar:nth-child(5) { height: 14px; }
+    .footer-eq .bar:nth-child(6) { height: 18px; }
+    .footer-wordmark {
+      font-family: 'Quicksand', system-ui, sans-serif;
+      font-weight: 500;
+      font-size: 20px;
+      letter-spacing: 0;
+      color: #ffffff;
+      text-transform: lowercase;
+      line-height: 1;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .nav-eq .bar { animation: none; }
+    }
+
     /* ── Custom scrollbar */
     ::-webkit-scrollbar { width:5px; }
     ::-webkit-scrollbar-track { background:#f1f1f1; }
@@ -123,22 +198,17 @@
 <nav id="navbar" class="fixed inset-x-0 top-0 z-50 bg-white border-b border-gray-100 shadow-sm transition-all duration-300">
   <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
 
-    <!-- Logo (klein in navbar) -->
-    <a href="#home" class="flex items-center gap-2.5">
-      <img src="assets/logo.png" alt="Andy Veltjen logo"
-           class="h-9 w-auto"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"/>
-      <!-- Fallback tekst als logo.png nog ontbreekt -->
-      <span style="display:none" class="items-center gap-2">
-        <svg width="24" height="20" viewBox="0 0 24 20" aria-hidden="true">
-          <rect x="0"  y="10" width="4" height="10" rx="1" fill="#E8177A"/>
-          <rect x="5"  y="3"  width="4" height="17" rx="1" fill="#404040"/>
-          <rect x="10" y="6"  width="4" height="14" rx="1" fill="#404040"/>
-          <rect x="15" y="0"  width="4" height="20" rx="1" fill="#404040"/>
-          <rect x="20" y="5"  width="4" height="15" rx="1" fill="#E8177A"/>
-        </svg>
-        <span class="text-[#2D2D2D] font-black text-base tracking-wide">andy veltjen</span>
+    <!-- Logo (animated EQ bars above, wordmark below — mirrors the real logo) -->
+    <a href="#home" class="nav-logo" aria-label="Andy Veltjen – home">
+      <span class="nav-eq" aria-hidden="true">
+        <span class="bar"></span>
+        <span class="bar pink"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar pink"></span>
+        <span class="bar"></span>
       </span>
+      <span class="nav-wordmark">andy veltjen</span>
     </a>
 
     <!-- Desktop links -->
@@ -181,9 +251,9 @@
 
 
 <!-- ══════════════════════════════════════════════════
-     HERO – wit, 2-kolom: logo links, tekst rechts
+     HERO – 2-kolom: logo links, tekst rechts (crème bg)
 ══════════════════════════════════════════════════ -->
-<section id="home" class="min-h-screen bg-white flex items-center pt-16">
+<section id="home" class="min-h-screen flex items-center pt-16 relative" style="background:#FAF8F6;">
   <div class="max-w-7xl mx-auto px-6 py-16 w-full">
     <div class="grid md:grid-cols-2 gap-12 items-center">
 
@@ -308,7 +378,7 @@
                ► Vervang 'assets/about.jpg' door uw eigen portretfoto
                ► Aanbevolen: staand formaat ~600×750 px -->
           <div class="rounded-3xl overflow-hidden bg-gray-100 aspect-[4/5] relative shadow-xl">
-            <img id="about-img" src="assets/about.jpg" alt="Andy Veltjen"
+            <img id="about-img" src="assets/about.png" alt="Andy Veltjen achter de DJ-booth"
                  class="w-full h-full object-cover"/>
             <!-- Placeholder als foto ontbreekt -->
             <div id="about-placeholder"
@@ -830,9 +900,19 @@
 <footer class="bg-[#2D2D2D] py-10 border-t border-white/5">
   <div class="max-w-7xl mx-auto px-6">
     <div class="flex flex-col md:flex-row items-center justify-between gap-5">
-      <div>
-        <div class="text-white font-black text-xl">andy veltjen</div>
-        <div class="text-white/30 text-xs mt-0.5 tracking-widest uppercase">deejay · sound &amp; light</div>
+      <div class="flex items-center gap-3">
+        <span class="footer-eq" aria-hidden="true">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </span>
+        <div>
+          <div class="footer-wordmark">andy veltjen</div>
+          <div class="text-white/30 text-[10px] mt-1 tracking-widest uppercase">deejay · sound &amp; light</div>
+        </div>
       </div>
       <nav class="flex gap-6" aria-label="Footer navigatie">
         <a href="#over-mij"  class="text-white/40 hover:text-white text-xs transition-colors">Over mij</a>

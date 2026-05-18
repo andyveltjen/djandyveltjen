@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="nl" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Designreview · Andy Veltjen one-pager</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['"JetBrains Mono"','ui-monospace','monospace'] },
+    colors: { pink: '#E8177A', pinkhover: '#f04898', ink: '#1c1c1c', mid: '#2D2D2D', cream: '#FAF8F6' }
+  }}};
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  :root { --pink:#E8177A; --ink:#1c1c1c; --mid:#2D2D2D; }
+  body { font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .num-chip {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2.25rem; height: 2.25rem; border-radius: 999px;
+    background: var(--pink); color: white; font-weight: 800; font-size: .9rem;
+  }
+  .tag { display:inline-block; font-size:.7rem; letter-spacing:.18em; text-transform:uppercase; font-weight:600; }
+  .hairline { height: 1px; background: linear-gradient(to right, transparent, #00000018, transparent); }
+  .impact { font-family: 'JetBrains Mono', monospace; font-size: .68rem; letter-spacing: .04em; }
+
+  /* Mock "browser" frame */
+  .mock-frame {
+    border-radius: 14px; overflow: hidden;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,.18), 0 8px 22px rgba(0,0,0,.06);
+    background: white; border: 1px solid #eee;
+  }
+  .mock-bar {
+    display:flex; align-items:center; gap:6px;
+    background: #f5f5f5; border-bottom:1px solid #eee; padding: 9px 14px;
+  }
+  .mock-dot { width: 10px; height: 10px; border-radius: 999px; background: #e0e0e0; }
+  .mock-bar .mock-url {
+    flex: 1; margin-left: 8px; background: white; border: 1px solid #ececec;
+    border-radius: 999px; padding: 4px 12px; font-size: 11px; color: #999;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Placeholder image (subtle striped) for missing photography */
+  .ph-stripes {
+    background-image: repeating-linear-gradient(135deg, #e9e7e4 0 14px, #f1efec 14px 28px);
+    color: #8a857d;
+  }
+  .ph-stripes.dark {
+    background-image: repeating-linear-gradient(135deg, #2a2a2a 0 14px, #333 14px 28px);
+    color: #999;
+  }
+
+  /* Annotation arrow */
+  .anno {
+    position: relative;
+    border-left: 2px dashed var(--pink);
+    padding: 4px 0 4px 14px;
+    font-size: .8rem;
+    color: #555;
+  }
+
+  /* Subtle running EQ to match the site */
+  @keyframes eq {
+    0%,100% { transform: scaleY(.35); }
+    50% { transform: scaleY(1); }
+  }
+  .eqbar { display:inline-block; width:3px; margin: 0 1px; background: var(--pink); border-radius:1px; transform-origin: bottom; animation: eq 1.2s ease-in-out infinite; height: 14px; }
+  .eqbar:nth-child(2) { animation-delay: .15s; }
+  .eqbar:nth-child(3) { animation-delay: .3s; }
+  .eqbar:nth-child(4) { animation-delay: .1s; }
+  .eqbar:nth-child(5) { animation-delay: .25s; }
+
+  /* Sticky-CTA mobile mock */
+  .phone-mock {
+    width: 280px; height: 540px;
+    border-radius: 36px; background: #111; padding: 12px;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,.4);
+    position: relative;
+  }
+  .phone-mock-inner {
+    width: 100%; height: 100%; border-radius: 26px; overflow: hidden;
+    background: white; position: relative;
+  }
+
+  /* Marker labels for before/after */
+  .label-before, .label-after {
+    position:absolute; top:14px; left:14px;
+    font-size:10px; letter-spacing: .2em; font-weight:700; text-transform:uppercase;
+    padding: 4px 10px; border-radius:999px;
+    backdrop-filter: blur(8px);
+    z-index: 5;
+  }
+  .label-before { background: rgba(255,255,255,.85); color: #555; border:1px solid #00000010; }
+  .label-after  { background: rgba(232,23,122,.95); color: white; }
+
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display:none; }
+</style>
+</head>
+
+<body class="bg-cream text-ink">
+
+<!-- ═══════════════════════════════════ HEADER ═══════════════════════════════════ -->
+<header class="border-b border-black/5 bg-white sticky top-0 z-40 backdrop-blur">
+  <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="flex items-end gap-[2px] h-5">
+        <span class="eqbar" style="height:6px"></span>
+        <span class="eqbar" style="height:14px"></span>
+        <span class="eqbar" style="height:10px"></span>
+        <span class="eqbar" style="height:18px"></span>
+        <span class="eqbar" style="height:12px"></span>
+      </div>
+      <div>
+        <div class="text-[11px] tracking-[.22em] uppercase text-mid/60 font-semibold">Designreview</div>
+        <div class="font-bold text-sm leading-tight">andy veltjen · one-pager</div>
+      </div>
+    </div>
+    <div class="hidden md:flex items-center gap-6 text-sm">
+      <a href="#prioriteiten" class="text-mid/60 hover:text-mid">Prioriteiten</a>
+      <a href="#mockups" class="text-mid/60 hover:text-mid">Voor / na</a>
+      <a href="#quickwins" class="text-mid/60 hover:text-mid">Quick wins</a>
+      <a href="#vervolg" class="bg-pink hover:bg-pinkhover transition-colors text-white px-4 py-2 rounded-full text-xs font-semibold">Volgende stap</a>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════ INTRO ═══════════════════════════════════ -->
+<section class="max-w-3xl mx-auto px-6 pt-20 pb-14">
+  <div class="tag text-pink mb-4">Review · 18 mei 2026</div>
+  <h1 class="text-4xl md:text-6xl font-black leading-[1.05] tracking-tight">
+    Een sterke basis.<br/>
+    <span class="text-mid/40">Hier nog wat schroefjes om</span><br/>
+    <span class="text-pink">aan te draaien.</span>
+  </h1>
+  <p class="mt-7 text-lg text-mid/70 leading-relaxed">
+    Je site is duidelijk, modern en de roze EQ‑identiteit zit consequent overal. De grootste winst zit niet
+    in nieuwe secties bouwen, maar in <strong class="text-mid">visuele bewijslast</strong> (foto's, video,
+    testimonials), <strong class="text-mid">concretere conversie‑elementen</strong> en een paar
+    <strong class="text-mid">copy‑aanscherpingen</strong>. Hieronder vijf prioriteiten, daarna twee uitgewerkte
+    voor/na‑mockups en een lijstje quick wins.
+  </p>
+
+  <!-- Quick verdict grid -->
+  <div class="mt-12 grid sm:grid-cols-3 gap-3">
+    <div class="bg-white border border-black/5 rounded-2xl p-5">
+      <div class="impact text-emerald-600 mb-1">✓ STERK</div>
+      <p class="text-sm text-mid/80 leading-relaxed">Helder ritme, fijne micro‑animaties, consistente kleur, sterke logo‑identiteit.</p>
+    </div>
+    <div class="bg-white border border-black/5 rounded-2xl p-5">
+      <div class="impact text-amber-600 mb-1">~ OK</div>
+      <p class="text-sm text-mid/80 leading-relaxed">Structuur klopt, maar voelt vrij standaard — onderscheid je beter van andere DJ‑sites.</p>
+    </div>
+    <div class="bg-white border border-black/5 rounded-2xl p-5">
+      <div class="impact text-pink mb-1">! GROEIKANS</div>
+      <p class="text-sm text-mid/80 leading-relaxed">Geen echte foto's, geen testimonials, geen video — net dát wat boekers nodig hebben.</p>
+    </div>
+  </div>
+</section>
+
+<div class="max-w-3xl mx-auto px-6"><div class="hairline"></div></div>
+
+<!-- ═══════════════════════════════════ PRIORITEITEN ═══════════════════════════════════ -->
+<section id="prioriteiten" class="max-w-3xl mx-auto px-6 py-16">
+  <div class="tag text-pink mb-3">Top 5 prioriteiten</div>
+  <h2 class="text-3xl md:text-4xl font-black tracking-tight">Wat de grootste impact maakt</h2>
+  <p class="mt-3 text-mid/60">Gerangschikt op verhouding inspanning ↔ resultaat. De eerste twee zijn de échte hefbomen.</p>
+
+  <div class="mt-12 space-y-12">
+
+    <!-- 1 -->
+    <article class="grid sm:grid-cols-[auto_1fr] gap-6">
+      <div><span class="num-chip">1</span></div>
+      <div>
+        <div class="flex flex-wrap items-center gap-3 mb-2">
+          <h3 class="text-2xl font-bold">Vervang placeholders door echte foto's</h3>
+          <span class="impact bg-pink/10 text-pink px-2 py-1 rounded">IMPACT · HOOG</span>
+          <span class="impact bg-emerald-100 text-emerald-700 px-2 py-1 rounded">INSPANNING · LAAG</span>
+        </div>
+        <p class="text-mid/75 leading-relaxed">
+          Op dit moment toont je hero alleen het logo op wit, en de "Over mij"‑foto is een placeholder. Een DJ‑site
+          zónder beeldmateriaal is als een restaurant zonder fotorapport: bezoekers <em>willen</em> sfeer voelen
+          voordat ze boeken. Dit is de grootste hefboom, en ook de makkelijkste.
+        </p>
+        <ul class="mt-4 space-y-2 text-sm text-mid/80">
+          <li class="flex gap-2"><span class="text-pink font-bold">›</span> <strong>Hero:</strong> grote actiefoto (jij achter de booth, drukke dansvloer, licht). Logo komt klein bovenop.</li>
+          <li class="flex gap-2"><span class="text-pink font-bold">›</span> <strong>Over mij:</strong> één scherpe portretfoto in zijaanzicht of in actie. Vermijd "studiopose".</li>
+          <li class="flex gap-2"><span class="text-pink font-bold">›</span> <strong>Nieuwe sectie "In actie":</strong> 6‑8 evenement‑foto's in een grid. Behandeld in mockup #1 hieronder.</li>
+        </ul>
+        <p class="mt-3 text-xs text-mid/50">⚑ Heb je nog geen foto's? Vraag bevriende fotografen die jij op events bent tegengekomen om enkele beelden in ruil voor naamsvermelding.</p>
+      </div>
+    </article>
+
+    <div class="hairline"></div>
+
+    <!-- 2 -->
+    <article class="grid sm:grid-cols-[auto_1fr] gap-6">
+      <div><span class="num-chip">2</span></div>
+      <div>
+        <div class="flex flex-wrap items-center gap-3 mb-2">
+          <h3 class="text-2xl font-bold">Voeg testimonials toe (sociaal bewijs)</h3>
+          <span class="impact bg-pink/10 text-pink px-2 py-1 rounded">IMPACT · HOOG</span>
+          <span class="impact bg-amber-100 text-amber-700 px-2 py-1 rounded">INSPANNING · MIDDEL</span>
+        </div>
+        <p class="text-mid/75 leading-relaxed">
+          "20+ jaar" en "500+ evenementen" zijn cijfers — krachtig, maar abstract. Een tevreden bruid die zegt
+          <em>"hij heeft élk moment juist aangevoeld"</em> overtuigt tien keer harder. Plaats 3‑5 quotes vlak
+          ná de "Werking"‑sectie, dat is het moment waarop een bezoeker twijfelt tussen "lees ik door" of "klik
+          ik contact".
+        </p>
+        <ul class="mt-4 space-y-2 text-sm text-mid/80">
+          <li class="flex gap-2"><span class="text-pink font-bold">›</span> Toon naam + type event + (indien mogelijk) een datum of locatie.</li>
+          <li class="flex gap-2"><span class="text-pink font-bold">›</span> Mix: 1 huwelijk · 1 verjaardag · 1 bedrijfsfeest · 1 fuif. Toont je breedte.</li>
+          <li class="flex gap-2"><span class="text-pink font-bold">›</span> Bij elke quote: rondje met foto of initialen op pink achtergrond.</li>
+          <li class="flex gap-2"><span class="text-pink font-bold">›</span> <strong>Link naar Google Reviews / Facebook</strong> onder de quotes — zo kan men verifiëren.</li>
+        </ul>
+      </div>
+    </article>
+
+    <div class="hairline"></div>
+
+    <!-- 3 -->
+    <article class="grid sm:grid-cols-[auto_1fr] gap-6">
+      <div><span class="num-chip">3</span></div>
+      <div>
+        <div class="flex flex-wrap items-center gap-3 mb-2">
+          <h3 class="text-2xl font-bold">Pas de hero‑boodschap en CTA's aan</h3>
+          <span class="impact bg-pink/10 text-pink px-2 py-1 rounded">IMPACT · MIDDEL</span>
+          <span class="impact bg-emerald-100 text-emerald-700 px-2 py-1 rounded">INSPANNING · LAAG</span>
+        </div>
+        <p class="text-mid/75 leading-relaxed">
+          "Muziek op maat van uw concept" is mooi maar abstract. De hero is je 5‑seconden‑pitch:
+          wát doe je, vóór wie, en wat moet ik nu doen?
+        </p>
+        <div class="mt-4 grid sm:grid-cols-2 gap-3">
+          <div class="bg-white border border-rose-200/70 rounded-xl p-4">
+            <div class="impact text-rose-500 mb-1">— NU</div>
+            <p class="font-script text-pink text-xl">Muziek op maat van uw concept</p>
+            <p class="text-sm text-mid/65 mt-2">Professioneel deejay voor elk evenement…</p>
+          </div>
+          <div class="bg-white border border-emerald-200/70 rounded-xl p-4">
+            <div class="impact text-emerald-600 mb-1">+ VOORSTEL</div>
+            <p class="text-2xl font-black leading-tight">Jouw feest. <br/>Mijn draaitafel.<br/><span class="text-pink">Geen seconde stilte.</span></p>
+            <p class="text-sm text-mid/65 mt-2">Deejay, geluid &amp; licht — alles‑in‑één voor huwelijken, fuiven en bedrijfsfeesten in heel België.</p>
+          </div>
+        </div>
+        <ul class="mt-4 space-y-2 text-sm text-mid/80">
+          <li class="flex gap-2"><span class="text-pink font-bold">›</span> Eerste CTA: <strong>"Check beschikbaarheid"</strong> i.p.v. "Maak een afspraak" — concreter, lager drempelig.</li>
+          <li class="flex gap-2"><span class="text-pink font-bold">›</span> Tweede CTA: <strong>"Bekijk een mix"</strong> (linkt naar Spotify/SoundCloud) i.p.v. "Ontdek meer".</li>
+        </ul>
+      </div>
+    </article>
+
+    <div class="hairline"></div>
+
+    <!-- 4 -->
+    <article class="grid sm:grid-cols-[auto_1fr] gap-6">
+      <div><span class="num-chip">4</span></div>
+      <div>
+        <div class="flex flex-wrap items-center gap-3 mb-2">
+          <h3 class="text-2xl font-bold">Sticky CTA op mobile (WhatsApp / Bel)</h3>
+          <span class="impact bg-pink/10 text-pink px-2 py-1 rounded">IMPACT · MIDDEL</span>
+          <span class="impact bg-emerald-100 text-emerald-700 px-2 py-1 rounded">INSPANNING · LAAG</span>
+        </div>
+        <p class="text-mid/75 leading-relaxed">
+          80%+ van je bezoekers komt waarschijnlijk op mobile binnen. Als ze enthousiast worden in de "Over mij"
+          of "Muziek"‑sectie, willen ze niet eerst doorscrollen naar onderaan. Een mini sticky‑balk onderaan
+          met <strong>Bel · WhatsApp · Mail</strong> levert bewezen meer aanvragen op. Zie mockup #2.
+        </p>
+      </div>
+    </article>
+
+    <div class="hairline"></div>
+
+    <!-- 5 -->
+    <article class="grid sm:grid-cols-[auto_1fr] gap-6">
+      <div><span class="num-chip">5</span></div>
+      <div>
+        <div class="flex flex-wrap items-center gap-3 mb-2">
+          <h3 class="text-2xl font-bold">Een korte FAQ + transparantie over prijs</h3>
+          <span class="impact bg-amber-100 text-amber-700 px-2 py-1 rounded">IMPACT · MIDDEL</span>
+          <span class="impact bg-amber-100 text-amber-700 px-2 py-1 rounded">INSPANNING · MIDDEL</span>
+        </div>
+        <p class="text-mid/75 leading-relaxed">
+          Boekers willen weten: <em>wat kost het ongeveer? hoe lang van tevoren reserveren? draai je tot wanneer?
+          komen jullie naar Limburg / Vlaams-Brabant / Wallonië?</em> Een compacte FAQ met 6‑8 antwoorden tussen
+          "Werking" en "Contact" haalt bezwaren weg vóór ze het formulier moeten gebruiken.
+        </p>
+        <ul class="mt-4 space-y-2 text-sm text-mid/80">
+          <li class="flex gap-2"><span class="text-pink font-bold">›</span> Eventueel een vanaf‑prijs of "richtprijs ALL IN vanaf €XXX". Schrikt sommige af, maar filtert je leads.</li>
+          <li class="flex gap-2"><span class="text-pink font-bold">›</span> Of: een tariefberekening in 3 stappen (type · uren · locatie → indicatieve range). Hoger drempelig, hogere conversie.</li>
+        </ul>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<div class="max-w-3xl mx-auto px-6"><div class="hairline"></div></div>
+
+<!-- ═══════════════════════════════════ MOCKUPS ═══════════════════════════════════ -->
+<section id="mockups" class="max-w-5xl mx-auto px-6 py-20">
+  <div class="tag text-pink mb-3">Voor / na</div>
+  <h2 class="text-3xl md:text-4xl font-black tracking-tight">Twee mockups, ter inspiratie</h2>
+  <p class="mt-3 text-mid/60 max-w-2xl">Geen herontwerp — gewoon laten zien hoe de eerste twee aanbevelingen er concreet uit kunnen zien in jouw bestaande huisstijl.</p>
+
+  <!-- ─── MOCKUP 1 — Hero before/after ─── -->
+  <div class="mt-14">
+    <h3 class="text-xl font-bold mb-1">Mockup 1 · Hero met sfeerfoto + sterkere boodschap</h3>
+    <p class="text-sm text-mid/60 mb-6">Logo blijft prominent (klein, links boven), foto draagt de sfeer, copy is concreter, twee duidelijke CTA's.</p>
+
+    <div class="grid lg:grid-cols-2 gap-6">
+
+      <!-- BEFORE -->
+      <div class="mock-frame relative">
+        <span class="label-before">Nu</span>
+        <div class="mock-bar">
+          <span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span>
+          <div class="mock-url">andyveltjen.github.io/djandyveltjen</div>
+        </div>
+        <div class="bg-white p-8 h-[380px] flex items-center">
+          <div class="grid grid-cols-2 gap-6 items-center w-full">
+            <!-- logo placeholder -->
+            <div class="flex flex-col items-center justify-center">
+              <div class="flex items-end gap-[3px] h-14 mb-2">
+                <div class="w-2 h-6 bg-mid rounded-sm"></div>
+                <div class="w-2 h-9 bg-mid rounded-sm"></div>
+                <div class="w-2 h-7 bg-mid rounded-sm"></div>
+                <div class="w-2 h-12 bg-mid rounded-sm"></div>
+                <div class="w-2 h-8 bg-mid rounded-sm"></div>
+                <div class="w-2 h-10 bg-mid rounded-sm"></div>
+              </div>
+              <div class="flex gap-[3px]">
+                <div class="w-2 h-2 bg-pink rounded-sm"></div>
+                <div class="w-2 h-2 bg-pink rounded-sm"></div>
+                <div class="w-2 h-2 bg-pink rounded-sm"></div>
+                <div class="w-2 h-2 bg-pink rounded-sm"></div>
+                <div class="w-2 h-2 bg-pink rounded-sm"></div>
+                <div class="w-2 h-2 bg-pink rounded-sm"></div>
+              </div>
+              <div class="font-black text-mid text-lg mt-3">andy veltjen</div>
+            </div>
+            <!-- copy -->
+            <div>
+              <div class="w-8 h-1 bg-pink rounded-full mb-2"></div>
+              <div class="text-pink italic text-base" style="font-family: 'Dancing Script', cursive">Muziek op maat van uw concept</div>
+              <div class="text-xs text-mid/55 mt-2 leading-snug">Professioneel deejay voor elk evenement. Meer dan 20 jaar ervaring…</div>
+              <div class="flex gap-2 mt-3">
+                <span class="text-[9px] bg-gray-100 text-mid/60 px-2 py-1 rounded-full">Evenement</span>
+                <span class="text-[9px] bg-gray-100 text-mid/60 px-2 py-1 rounded-full">Fuif</span>
+                <span class="text-[9px] bg-gray-100 text-mid/60 px-2 py-1 rounded-full">Verjaardag</span>
+              </div>
+              <div class="flex gap-2 mt-3">
+                <span class="bg-pink text-white text-[10px] font-semibold px-3 py-1.5 rounded-full">Maak een afspraak</span>
+                <span class="border border-mid text-mid text-[10px] font-semibold px-3 py-1.5 rounded-full">Ontdek meer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AFTER -->
+      <div class="mock-frame relative">
+        <span class="label-after">Voorstel</span>
+        <div class="mock-bar">
+          <span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span>
+          <div class="mock-url">andyveltjen.be</div>
+        </div>
+        <div class="relative h-[380px] ph-stripes dark overflow-hidden">
+          <!-- mock photo background with subtle gradient -->
+          <div class="absolute inset-0" style="background:
+             radial-gradient(circle at 75% 30%, rgba(232,23,122,.55), transparent 40%),
+             radial-gradient(circle at 30% 70%, rgba(70,30,200,.45), transparent 45%),
+             linear-gradient(135deg, #1c1c1c 0%, #2a2330 60%, #3a1a2a 100%);"></div>
+          <!-- subtle photo placeholder label -->
+          <div class="absolute top-3 right-3 impact text-white/35">[ actiefoto · dansvloer ]</div>
+          <!-- subtle bottom shadow -->
+          <div class="absolute inset-x-0 bottom-0 h-2/3" style="background: linear-gradient(to top, rgba(0,0,0,.78), transparent);"></div>
+          <!-- top-left mini logo -->
+          <div class="absolute top-4 left-4 flex items-center gap-2 z-10">
+            <div class="flex items-end gap-[2px] h-5">
+              <div class="w-[3px] h-2 bg-white rounded-sm"></div>
+              <div class="w-[3px] h-3 bg-white rounded-sm"></div>
+              <div class="w-[3px] h-4 bg-white rounded-sm"></div>
+              <div class="w-[3px] h-3 bg-pink rounded-sm"></div>
+              <div class="w-[3px] h-5 bg-white rounded-sm"></div>
+            </div>
+            <div class="text-white text-[11px] font-black tracking-wide">andy veltjen</div>
+          </div>
+          <!-- Right side nav -->
+          <div class="absolute top-4 right-4 text-[10px] text-white/70 flex gap-3 z-10">
+            <span>Over</span><span>Werking</span><span>Muziek</span>
+            <span class="bg-pink text-white px-2.5 py-1 rounded-full font-semibold">Check beschikbaarheid</span>
+          </div>
+          <!-- Main content overlaid -->
+          <div class="relative z-10 h-full flex flex-col justify-end p-8">
+            <div class="impact text-pink mb-2">DEEJAY · SOUND &amp; LIGHT · SINDS 2004</div>
+            <h4 class="text-white font-black text-2xl leading-[1.05] tracking-tight">
+              Jouw feest. Mijn draaitafel.<br/>
+              <span class="text-pink">Geen seconde stilte.</span>
+            </h4>
+            <p class="text-white/65 text-xs mt-3 max-w-sm leading-relaxed">
+              Deejay, geluid &amp; licht — alles‑in‑één voor huwelijken, fuiven en bedrijfsfeesten in heel België.
+            </p>
+            <div class="flex gap-2 mt-4">
+              <span class="bg-pink text-white text-[10px] font-bold px-3 py-2 rounded-full">→ Check beschikbaarheid</span>
+              <span class="border border-white/40 text-white text-[10px] font-bold px-3 py-2 rounded-full">▶ Beluister een mix</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wat er anders is -->
+    <div class="mt-6 grid sm:grid-cols-3 gap-3">
+      <div class="bg-white border border-black/5 rounded-xl p-4">
+        <div class="impact text-pink mb-1">A · BEELD</div>
+        <p class="text-sm text-mid/75">Echte sfeer als achtergrond. Werkt zelfs met een licht‑geblurde foto van jou in actie.</p>
+      </div>
+      <div class="bg-white border border-black/5 rounded-xl p-4">
+        <div class="impact text-pink mb-1">B · KOP</div>
+        <p class="text-sm text-mid/75">Concreter, sneller te scannen. "Geen seconde stilte" wordt je tagline.</p>
+      </div>
+      <div class="bg-white border border-black/5 rounded-xl p-4">
+        <div class="impact text-pink mb-1">C · CTA</div>
+        <p class="text-sm text-mid/75">"Check beschikbaarheid" geeft controle. "Beluister een mix" laat ervaren wat je doet.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── MOCKUP 2 — Testimonials & sticky CTA ─── -->
+  <div class="mt-20">
+    <h3 class="text-xl font-bold mb-1">Mockup 2 · Testimonials‑sectie + mobile sticky CTA</h3>
+    <p class="text-sm text-mid/60 mb-6">De testimonials komen tussen "Werking" en "Muziek". De sticky CTA is enkel mobiel zichtbaar.</p>
+
+    <div class="grid lg:grid-cols-[1fr_280px] gap-8 items-start">
+
+      <!-- Testimonials section mock -->
+      <div class="mock-frame">
+        <div class="mock-bar">
+          <span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span>
+          <div class="mock-url">andyveltjen.be · #ervaringen</div>
+        </div>
+        <div class="bg-cream p-8">
+          <div class="text-center mb-8">
+            <div class="impact text-pink mb-2">ERVARINGEN</div>
+            <h4 class="text-2xl font-black tracking-tight">Wat opdrachtgevers zeggen</h4>
+            <div class="flex justify-center items-center gap-1 mt-2 text-amber-500">
+              ★★★★★ <span class="text-mid/50 text-xs ml-2">4.9 · 87 reviews op Google</span>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-4">
+            <!-- Card 1 -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-black/5">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-full bg-pink/15 text-pink font-black flex items-center justify-center text-sm flex-shrink-0">JV</div>
+                <div>
+                  <div class="font-bold text-sm">Jolien &amp; Bram</div>
+                  <div class="text-[10px] text-mid/55">Huwelijk · Heers · juni 2024</div>
+                </div>
+              </div>
+              <p class="text-sm text-mid/75 mt-3 leading-relaxed">"Andy heeft élk moment juist aangevoeld. Van de openingsdans tot het laatste polonaise‑moment om 4u — onze gasten praten er nóg over."</p>
+              <div class="text-amber-500 text-xs mt-3">★★★★★</div>
+            </div>
+            <!-- Card 2 -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-black/5">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-full bg-pink/15 text-pink font-black flex items-center justify-center text-sm flex-shrink-0">DK</div>
+                <div>
+                  <div class="font-bold text-sm">Dirk Kelchtermans</div>
+                  <div class="text-[10px] text-mid/55">Personeelsfeest · KBC · dec 2023</div>
+                </div>
+              </div>
+              <p class="text-sm text-mid/75 mt-3 leading-relaxed">"Professioneel van A tot Z. Vooraf een duidelijk draaiboek, op de dag zelf geen enkele zorg. ALL IN doet wat het belooft."</p>
+              <div class="text-amber-500 text-xs mt-3">★★★★★</div>
+            </div>
+            <!-- Card 3 -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-black/5">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-full bg-pink/15 text-pink font-black flex items-center justify-center text-sm flex-shrink-0">MS</div>
+                <div>
+                  <div class="font-bold text-sm">Marleen Smets</div>
+                  <div class="text-[10px] text-mid/55">50ste verjaardag · Hasselt · 2024</div>
+                </div>
+              </div>
+              <p class="text-sm text-mid/75 mt-3 leading-relaxed">"Drie generaties op één dansvloer, en iedereen vond zijn nummer. Andy luistert écht naar wat je wil."</p>
+              <div class="text-amber-500 text-xs mt-3">★★★★★</div>
+            </div>
+          </div>
+
+          <div class="text-center mt-6">
+            <span class="text-xs text-mid/55 hover:text-pink cursor-pointer underline underline-offset-4">→ Lees alle 87 reviews op Google</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile sticky CTA phone mock -->
+      <div class="flex flex-col items-center">
+        <div class="phone-mock">
+          <div class="phone-mock-inner">
+            <!-- top dynamic island -->
+            <div class="h-7 bg-black w-full flex justify-center items-end pb-1.5">
+              <div class="w-20 h-4 bg-black rounded-full"></div>
+            </div>
+            <!-- fake content -->
+            <div class="px-3 pt-3 space-y-2 bg-white h-full overflow-hidden">
+              <div class="h-3 w-24 bg-mid/15 rounded"></div>
+              <div class="h-6 w-3/4 bg-mid/25 rounded mt-2"></div>
+              <div class="h-3 w-full bg-mid/10 rounded"></div>
+              <div class="h-3 w-5/6 bg-mid/10 rounded"></div>
+              <div class="h-32 bg-mid/10 rounded-lg ph-stripes flex items-center justify-center mt-2 impact">[ over mij ]</div>
+              <div class="h-3 w-full bg-mid/10 rounded mt-2"></div>
+              <div class="h-3 w-2/3 bg-mid/10 rounded"></div>
+              <div class="h-20 bg-mid/10 rounded-lg ph-stripes flex items-center justify-center mt-2 impact">[ werking ]</div>
+            </div>
+            <!-- sticky CTA bar -->
+            <div class="absolute bottom-0 inset-x-0 bg-mid border-t border-white/10 px-3 py-2.5 grid grid-cols-3 gap-2">
+              <div class="bg-pink text-white text-[10px] font-bold rounded-lg py-2 text-center flex items-center justify-center gap-1">
+                <svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24"><path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57a1.02 1.02 0 0 0-1.02.24l-2.2 2.2a15.07 15.07 0 0 1-6.59-6.59l2.2-2.2c.27-.27.35-.67.24-1.02A11.36 11.36 0 0 1 8.5 4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1c0 9.39 7.61 17 17 17a1 1 0 0 0 1-1v-3.5a1 1 0 0 0-1-1z"/></svg>
+                Bel
+              </div>
+              <div class="bg-emerald-500 text-white text-[10px] font-bold rounded-lg py-2 text-center flex items-center justify-center gap-1">
+                <svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.1.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.8-.7-1.4-1.6-1.6-1.9-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5l.2-.3c.1-.1 0-.3 0-.4-.1-.1-.6-1.5-.9-2-.2-.5-.5-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.8 2.3.9 2.5c.1.2 1.6 2.5 4 3.5.6.2 1 .4 1.3.5.6.2 1.1.2 1.5.1.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1 0-.1-.2-.2-.5-.3zM12 2C6.5 2 2 6.5 2 12c0 1.7.5 3.4 1.4 4.9L2 22l5.3-1.4A10 10 0 1 0 12 2z"/></svg>
+                WhatsApp
+              </div>
+              <div class="bg-white/10 text-white text-[10px] font-bold rounded-lg py-2 text-center flex items-center justify-center gap-1">
+                <svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>
+                Mail
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="text-xs text-mid/55 mt-4 text-center max-w-[240px] leading-relaxed">
+          Verschijnt enkel op mobile, na ~600px scrollen. Subtiel maar binnen handbereik.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="max-w-3xl mx-auto px-6"><div class="hairline"></div></div>
+
+<!-- ═══════════════════════════════════ QUICK WINS ═══════════════════════════════════ -->
+<section id="quickwins" class="max-w-3xl mx-auto px-6 py-20">
+  <div class="tag text-pink mb-3">Quick wins</div>
+  <h2 class="text-3xl md:text-4xl font-black tracking-tight">Tien kleine ingrepen, samen 1 uur werk</h2>
+  <p class="mt-3 text-mid/60">Niet sexy, wel effect. Vink af terwijl je bezig bent.</p>
+
+  <div class="mt-10 space-y-3">
+    <!-- item template -->
+    <details class="group bg-white rounded-xl border border-black/5 overflow-hidden">
+      <summary class="flex items-center gap-4 p-4 hover:bg-cream transition-colors">
+        <span class="w-6 h-6 rounded-md border border-mid/20 group-open:bg-pink group-open:border-pink flex-shrink-0 flex items-center justify-center text-white text-xs">✓</span>
+        <span class="font-semibold flex-1">Vervang de Spotify‑playlist (nu een generieke Top Hits)</span>
+        <span class="impact text-mid/40 group-open:rotate-45 transition-transform">+</span>
+      </summary>
+      <div class="px-4 pb-4 pl-14 text-sm text-mid/70 leading-relaxed">
+        Je iframe wijst nu naar <code class="bg-mid/5 px-1.5 py-0.5 rounded">37i9dQZF1DX6J5NfMJS675</code> — dat is Spotify's "Today's Top Hits". Maak een eigen "Andy Veltjen · Showcase"‑playlist (15‑20 nummers, jouw signature mix) en plak de ID erin. Zo hoort men jóuw smaak, niet de chart.
+      </div>
+    </details>
+
+    <details class="group bg-white rounded-xl border border-black/5 overflow-hidden">
+      <summary class="flex items-center gap-4 p-4 hover:bg-cream transition-colors">
+        <span class="w-6 h-6 rounded-md border border-mid/20 group-open:bg-pink group-open:border-pink flex-shrink-0 flex items-center justify-center text-white text-xs">✓</span>
+        <span class="font-semibold flex-1">Maak de Facebook‑link werkend (staat nu op <code class="text-xs">#</code>)</span>
+        <span class="impact text-mid/40 group-open:rotate-45 transition-transform">+</span>
+      </summary>
+      <div class="px-4 pb-4 pl-14 text-sm text-mid/70 leading-relaxed">Dode links voelen onverzorgd. Voeg ook Instagram toe als die bestaat — voor events vaak relevanter dan Facebook.</div>
+    </details>
+
+    <details class="group bg-white rounded-xl border border-black/5 overflow-hidden">
+      <summary class="flex items-center gap-4 p-4 hover:bg-cream transition-colors">
+        <span class="w-6 h-6 rounded-md border border-mid/20 group-open:bg-pink group-open:border-pink flex-shrink-0 flex items-center justify-center text-white text-xs">✓</span>
+        <span class="font-semibold flex-1">Activeer het formulier echt (Formspree of Netlify Forms)</span>
+        <span class="impact text-mid/40 group-open:rotate-45 transition-transform">+</span>
+      </summary>
+      <div class="px-4 pb-4 pl-14 text-sm text-mid/70 leading-relaxed">Staat nu op demo. Een test‑inzending vandaag doen zou ik aanraden, je README beschrijft het al perfect.</div>
+    </details>
+
+    <details class="group bg-white rounded-xl border border-black/5 overflow-hidden">
+      <summary class="flex items-center gap-4 p-4 hover:bg-cream transition-colors">
+        <span class="w-6 h-6 rounded-md border border-mid/20 group-open:bg-pink group-open:border-pink flex-shrink-0 flex items-center justify-center text-white text-xs">✓</span>
+        <span class="font-semibold flex-1">Maak het formulier korter (4 velden i.p.v. 7)</span>
+        <span class="impact text-mid/40 group-open:rotate-45 transition-transform">+</span>
+      </summary>
+      <div class="px-4 pb-4 pl-14 text-sm text-mid/70 leading-relaxed">
+        Naam · e‑mail · datum · bericht. Het type evenement en telefoonnummer kunnen weg of optioneel worden — je kan dat in een mail‑antwoord terugvragen. Elk veld is een drop‑off‑kans.
+      </div>
+    </details>
+
+    <details class="group bg-white rounded-xl border border-black/5 overflow-hidden">
+      <summary class="flex items-center gap-4 p-4 hover:bg-cream transition-colors">
+        <span class="w-6 h-6 rounded-md border border-mid/20 group-open:bg-pink group-open:border-pink flex-shrink-0 flex items-center justify-center text-white text-xs">✓</span>
+        <span class="font-semibold flex-1">Vervang het "ALL IN" stat‑blok door iets meetbaars</span>
+        <span class="impact text-mid/40 group-open:rotate-45 transition-transform">+</span>
+      </summary>
+      <div class="px-4 pb-4 pl-14 text-sm text-mid/70 leading-relaxed">
+        20+ · 500+ · <strong>ALL IN</strong> · 100% — die "ALL IN" valt uit de toon. Vervang door iets als <strong>4.9★</strong> (Google rating) of <strong>9/10</strong> klanten boeken opnieuw, of <strong>BE</strong>/landdekking.
+      </div>
+    </details>
+
+    <details class="group bg-white rounded-xl border border-black/5 overflow-hidden">
+      <summary class="flex items-center gap-4 p-4 hover:bg-cream transition-colors">
+        <span class="w-6 h-6 rounded-md border border-mid/20 group-open:bg-pink group-open:border-pink flex-shrink-0 flex items-center justify-center text-white text-xs">✓</span>
+        <span class="font-semibold flex-1">Voeg een Open‑Graph‑afbeelding toe (voor WhatsApp/FB‑previews)</span>
+        <span class="impact text-mid/40 group-open:rotate-45 transition-transform">+</span>
+      </summary>
+      <div class="px-4 pb-4 pl-14 text-sm text-mid/70 leading-relaxed">
+        Wanneer iemand je site nu deelt in WhatsApp/Messenger, krijgt hij een leeg kaartje. Voeg in <code>&lt;head&gt;</code> een <code>og:image</code> toe (1200×630, foto van jou achter de booth + logo erin).
+      </div>
+    </details>
+
+    <details class="group bg-white rounded-xl border border-black/5 overflow-hidden">
+      <summary class="flex items-center gap-4 p-4 hover:bg-cream transition-colors">
+        <span class="w-6 h-6 rounded-md border border-mid/20 group-open:bg-pink group-open:border-pink flex-shrink-0 flex items-center justify-center text-white text-xs">✓</span>
+        <span class="font-semibold flex-1">Eigen domein i.p.v. andyveltjen.github.io</span>
+        <span class="impact text-mid/40 group-open:rotate-45 transition-transform">+</span>
+      </summary>
+      <div class="px-4 pb-4 pl-14 text-sm text-mid/70 leading-relaxed">
+        <code>andyveltjen.be</code> oogt een pak professioneler op visitekaartjes en in offertes. GitHub Pages ondersteunt custom domains gratis.
+      </div>
+    </details>
+
+    <details class="group bg-white rounded-xl border border-black/5 overflow-hidden">
+      <summary class="flex items-center gap-4 p-4 hover:bg-cream transition-colors">
+        <span class="w-6 h-6 rounded-md border border-mid/20 group-open:bg-pink group-open:border-pink flex-shrink-0 flex items-center justify-center text-white text-xs">✓</span>
+        <span class="font-semibold flex-1">Vervang het Dancing‑Script‑lettertype</span>
+        <span class="impact text-mid/40 group-open:rotate-45 transition-transform">+</span>
+      </summary>
+      <div class="px-4 pb-4 pl-14 text-sm text-mid/70 leading-relaxed">
+        Het handgeschreven lettertype voor "Muziek op maat van uw concept" voelt iets te bruidsbeurs‑romantisch en clasht een beetje met de strakke EQ‑identiteit. Probeer dezelfde regel in vetgedrukte Inter — sterker, eigentijdser.
+      </div>
+    </details>
+
+    <details class="group bg-white rounded-xl border border-black/5 overflow-hidden">
+      <summary class="flex items-center gap-4 p-4 hover:bg-cream transition-colors">
+        <span class="w-6 h-6 rounded-md border border-mid/20 group-open:bg-pink group-open:border-pink flex-shrink-0 flex items-center justify-center text-white text-xs">✓</span>
+        <span class="font-semibold flex-1">Maak iconen consistent (sommige zijn nu wat verwarrend)</span>
+        <span class="impact text-mid/40 group-open:rotate-45 transition-transform">+</span>
+      </summary>
+      <div class="px-4 pb-4 pl-14 text-sm text-mid/70 leading-relaxed">
+        Vooral het "Deejay"‑icoon in de ALL IN‑sectie is moeilijk te lezen. Heroicons (gratis, MIT) of Tabler Icons hebben hier nettere set‑equivalenten voor.
+      </div>
+    </details>
+
+    <details class="group bg-white rounded-xl border border-black/5 overflow-hidden">
+      <summary class="flex items-center gap-4 p-4 hover:bg-cream transition-colors">
+        <span class="w-6 h-6 rounded-md border border-mid/20 group-open:bg-pink group-open:border-pink flex-shrink-0 flex items-center justify-center text-white text-xs">✓</span>
+        <span class="font-semibold flex-1">Voeg JSON‑LD schema toe (LocalBusiness) voor Google</span>
+        <span class="impact text-mid/40 group-open:rotate-45 transition-transform">+</span>
+      </summary>
+      <div class="px-4 pb-4 pl-14 text-sm text-mid/70 leading-relaxed">
+        Met een klein <code>&lt;script type="application/ld+json"&gt;</code>‑blok in je head krijgen je openingsuren, rating en regio een mooie weergave in Google‑zoekresultaten. Vooral handig voor zoektermen als <em>"dj huwelijk Limburg"</em>.
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ NICE-TO-HAVES ═══════════════════════════════════ -->
+<section class="max-w-3xl mx-auto px-6 py-12">
+  <div class="tag text-pink mb-3">Voor later</div>
+  <h2 class="text-2xl md:text-3xl font-black tracking-tight">Als je nog tijd over hebt</h2>
+
+  <div class="mt-8 grid sm:grid-cols-2 gap-4">
+    <div class="bg-white border border-black/5 rounded-2xl p-5">
+      <div class="text-pink font-bold text-sm">▶ Korte highlight‑reel</div>
+      <p class="text-sm text-mid/75 mt-2 leading-relaxed">30‑45 seconden video: jij achter de booth, springende mensen, lichtshow. Autoplay gemute in plaats van foto in de hero.</p>
+    </div>
+    <div class="bg-white border border-black/5 rounded-2xl p-5">
+      <div class="text-pink font-bold text-sm">📅 Online datum‑checker</div>
+      <p class="text-sm text-mid/75 mt-2 leading-relaxed">Een mini‑formulier: "Mijn datum?" → calendar pop‑up → "Beschikbaar, neem contact op" of "Vol, vraag info aan over alternatieve datum".</p>
+    </div>
+    <div class="bg-white border border-black/5 rounded-2xl p-5">
+      <div class="text-pink font-bold text-sm">🎚️ Interactieve "verzoeklijst‑demo"</div>
+      <p class="text-sm text-mid/75 mt-2 leading-relaxed">Een speeltje waar bezoekers 3 nummers kunnen "aanvragen" en jij een korte AI‑gegenereerde sfeerbeschrijving teruggeeft. Memorable, deelbaar.</p>
+    </div>
+    <div class="bg-white border border-black/5 rounded-2xl p-5">
+      <div class="text-pink font-bold text-sm">🗺️ Belgisch‑Limburgse focus</div>
+      <p class="text-sm text-mid/75 mt-2 leading-relaxed">Een sectie "Recente events" met locaties op een mini‑kaart van België. Toont je werkgebied visueel.</p>
+    </div>
+    <div class="bg-white border border-black/5 rounded-2xl p-5">
+      <div class="text-pink font-bold text-sm">🌙 Dark mode toggle</div>
+      <p class="text-sm text-mid/75 mt-2 leading-relaxed">Past goed bij DJ‑identiteit. Donker is ook flatterender voor sfeerfoto's. Eén‑klik toggle in de nav.</p>
+    </div>
+    <div class="bg-white border border-black/5 rounded-2xl p-5">
+      <div class="text-pink font-bold text-sm">🎁 Referral programma</div>
+      <p class="text-sm text-mid/75 mt-2 leading-relaxed">"Verwijs een vriend, ontvang €50 cashback" — kost weinig, levert verrassend veel boekingen.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ VERVOLG ═══════════════════════════════════ -->
+<section id="vervolg" class="max-w-3xl mx-auto px-6 py-20">
+  <div class="bg-mid rounded-3xl p-8 md:p-12 text-white">
+    <div class="impact text-pink mb-3">VOLGENDE STAP</div>
+    <h2 class="text-3xl md:text-4xl font-black tracking-tight">Welk stuk werken we als eerste uit?</h2>
+    <p class="mt-4 text-white/65 leading-relaxed max-w-2xl">
+      Ik kan elk van deze aanbevelingen live in je <code>index.html</code> implementeren — kies één of meerdere
+      en we maken in deze omgeving meteen een werkbare versie naast je huidige bestand, zodat je kunt vergelijken
+      voor je iets push't naar GitHub.
+    </p>
+    <div class="mt-8 grid sm:grid-cols-2 gap-3">
+      <div class="border border-white/15 rounded-xl p-4 hover:border-pink transition-colors cursor-default">
+        <div class="font-bold">Hero met sfeerfoto</div>
+        <div class="text-xs text-white/55 mt-1">Mockup #1 omzetten naar code</div>
+      </div>
+      <div class="border border-white/15 rounded-xl p-4 hover:border-pink transition-colors cursor-default">
+        <div class="font-bold">Testimonials‑sectie</div>
+        <div class="text-xs text-white/55 mt-1">3‑6 quotes, met Google‑rating</div>
+      </div>
+      <div class="border border-white/15 rounded-xl p-4 hover:border-pink transition-colors cursor-default">
+        <div class="font-bold">Sticky mobile CTA</div>
+        <div class="text-xs text-white/55 mt-1">Bel · WhatsApp · Mail bar</div>
+      </div>
+      <div class="border border-white/15 rounded-xl p-4 hover:border-pink transition-colors cursor-default">
+        <div class="font-bold">FAQ + transparantie</div>
+        <div class="text-xs text-white/55 mt-1">6 vragen, ALL‑IN richtprijs</div>
+      </div>
+      <div class="border border-white/15 rounded-xl p-4 hover:border-pink transition-colors cursor-default">
+        <div class="font-bold">Gallery "In actie"</div>
+        <div class="text-xs text-white/55 mt-1">Grid met event‑foto's</div>
+      </div>
+      <div class="border border-white/15 rounded-xl p-4 hover:border-pink transition-colors cursor-default">
+        <div class="font-bold">Quick wins pakket</div>
+        <div class="text-xs text-white/55 mt-1">Alle 10 vinkjes in één commit</div>
+      </div>
+    </div>
+
+    <p class="mt-8 text-sm text-white/55">
+      → Laat me weten welke je wil aanpakken. Best wel: <strong class="text-white">Hero + Testimonials + Sticky CTA</strong>,
+      dat zijn de drie hefbomen.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════ FOOTER ═══════════════════════════════════ -->
+<footer class="border-t border-black/5 py-10 mt-10">
+  <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row gap-3 items-center justify-between text-xs text-mid/45">
+    <div>Designreview · andy veltjen one‑pager · 18 mei 2026</div>
+    <div class="flex items-end gap-[2px] h-3">
+      <span class="eqbar" style="height:4px"></span>
+      <span class="eqbar" style="height:8px"></span>
+      <span class="eqbar" style="height:6px"></span>
+      <span class="eqbar" style="height:11px"></span>
+      <span class="eqbar" style="height:7px"></span>
+    </div>
+    <div>Pink #E8177A · Ink #2D2D2D</div>
+  </div>
+</footer>
+
+</body>
+</html>
