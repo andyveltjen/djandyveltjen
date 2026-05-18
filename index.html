@@ -281,7 +281,7 @@
         <!-- Scheidingslijn links (roze accent) -->
         <div class="hero-item">
           <div class="w-12 h-1 bg-[#E8177A] rounded-full mb-5"></div>
-          <p class="font-script text-[#E8177A] text-3xl sm:text-4xl leading-snug">
+          <p id="hero-tagline" class="font-script text-[#E8177A] text-3xl sm:text-4xl leading-snug">
             Muziek op maat van uw concept
           </p>
         </div>
@@ -410,8 +410,8 @@
       <!-- Tekst kolom -->
       <div class="reveal-right">
         <p class="text-[#E8177A] font-semibold text-xs uppercase tracking-[.2em] mb-3">Over mij</p>
-        <h2 class="text-4xl md:text-5xl font-black leading-tight mb-6">
-          De man achter<br/>de draaitafels
+        <h2 id="about-heading" class="text-4xl md:text-5xl font-black leading-tight mb-6">
+          De man achter de draaitafels
         </h2>
 
         <!-- Inhoud geladen via content/about.md  – fallback inline -->
@@ -453,7 +453,7 @@
       <h2 class="text-4xl md:text-5xl font-black leading-tight mb-4">
         Eenvoudig en met<br/>uiterste zorg
       </h2>
-      <p class="text-gray-500 text-lg">
+      <p id="werking-sub" class="text-gray-500 text-lg">
         Van eerste contact tot het laatste nummer, alles tot in de puntjes verzorgd.
       </p>
     </div>
@@ -464,28 +464,28 @@
       <div class="card-lift bg-white rounded-2xl p-8 shadow-sm border border-gray-100 reveal d1">
         <div class="w-14 h-14 bg-[#E8177A] rounded-2xl flex items-center justify-center
                     text-white text-2xl font-black mb-6 shadow-lg shadow-[#E8177A]/30">1</div>
-        <h3 class="text-xl font-bold mb-3">Vrijblijvende afspraak</h3>
-        <p class="text-gray-500 leading-relaxed">
+        <h3 id="stap1-titel" class="text-xl font-bold mb-3">Vrijblijvende afspraak</h3>
+        <div id="stap1-tekst" class="text-gray-500 leading-relaxed">
           We ontmoeten elkaar voor een persoonlijk gesprek – online of bij u thuis. U stelt vragen, ik luister. Geen enkele verplichting.
-        </p>
+        </div>
       </div>
 
       <div class="card-lift bg-white rounded-2xl p-8 shadow-sm border border-gray-100 reveal d2">
         <div class="w-14 h-14 bg-[#E8177A] rounded-2xl flex items-center justify-center
                     text-white text-2xl font-black mb-6 shadow-lg shadow-[#E8177A]/30">2</div>
-        <h3 class="text-xl font-bold mb-3">Muziek &amp; draaiboek</h3>
-        <p class="text-gray-500 leading-relaxed">
+        <h3 id="stap2-titel" class="text-xl font-bold mb-3">Muziek &amp; draaiboek</h3>
+        <div id="stap2-tekst" class="text-gray-500 leading-relaxed">
           Muziek en draaiboek worden in detail besproken. Uw favorieten, de sfeer per moment van de avond – alles op papier gezet.
-        </p>
+        </div>
       </div>
 
       <div class="card-lift bg-white rounded-2xl p-8 shadow-sm border border-gray-100 reveal d3">
         <div class="w-14 h-14 bg-[#E8177A] rounded-2xl flex items-center justify-center
                     text-white text-2xl font-black mb-6 shadow-lg shadow-[#E8177A]/30">3</div>
-        <h3 class="text-xl font-bold mb-3">Volledig uit handen</h3>
-        <p class="text-gray-500 leading-relaxed">
+        <h3 id="stap3-titel" class="text-xl font-bold mb-3">Volledig uit handen</h3>
+        <div id="stap3-tekst" class="text-gray-500 leading-relaxed">
           Geluid, licht en deejay zijn volledig uit handen. Op de dag zelf regelt u niets – u geniet, ik zorg voor de rest.
-        </p>
+        </div>
       </div>
 
     </div>
@@ -499,13 +499,11 @@
                        px-4 py-1.5 rounded-full mb-4 tracking-wider">
             ALL IN PAKKET
           </span>
-          <h3 class="text-3xl font-black text-white mb-4">Alles onder één dak</h3>
-          <p class="text-white/60 leading-relaxed mb-3">
-            Geen gedoe met verschillende leveranciers. Deejay, professioneel geluid én een complete lichtshow – volledig gecoördineerd door één persoon, voor één overzichtelijke prijs.
-          </p>
-          <p class="text-white/60 leading-relaxed">
-            Zo houdt u de handen vrij voor wat écht telt: genieten van uw feest.
-          </p>
+          <h3 id="allin-titel" class="text-3xl font-black text-white mb-4">Alles onder één dak</h3>
+          <div id="allin-tekst" class="text-white/60 leading-relaxed space-y-3 mb-3">
+            <p>Geen gedoe met verschillende leveranciers. Deejay, professioneel geluid én een complete lichtshow – volledig gecoördineerd door één persoon, voor één overzichtelijke prijs.</p>
+            <p>Zo houdt u de handen vrij voor wat écht telt: genieten van uw feest.</p>
+          </div>
           <a href="#contact"
              class="inline-block mt-6 bg-[#E8177A] text-white px-6 py-3 rounded-full font-semibold
                     hover:bg-[#f04898] transition-colors">
@@ -606,50 +604,50 @@
 
       <div class="card-lift bg-white/5 border border-white/10 rounded-2xl p-6
                   hover:border-[#E8177A]/40 transition-colors reveal d1">
-        <div class="text-[#E8177A] font-bold mb-2">Dance &amp; Hits</div>
-        <p class="text-white/55 text-sm leading-relaxed">
+        <div id="genre-1-titel" class="text-[#E8177A] font-bold mb-2">Dance &amp; Hits</div>
+        <div id="genre-1-tekst" class="text-white/55 text-sm leading-relaxed">
           Actuele toppers, commerciële dance en de grote hits die iedereen kent en meezingt.
-        </p>
+        </div>
       </div>
 
       <div class="card-lift bg-white/5 border border-white/10 rounded-2xl p-6
                   hover:border-[#E8177A]/40 transition-colors reveal d2">
-        <div class="text-[#E8177A] font-bold mb-2">Nederlandstalig</div>
-        <p class="text-white/55 text-sm leading-relaxed">
+        <div id="genre-2-titel" class="text-[#E8177A] font-bold mb-2">Nederlandstalig</div>
+        <div id="genre-2-tekst" class="text-white/55 text-sm leading-relaxed">
           Van Clouseau tot Urbanus, van Marco Borsato tot Regi – voor elk publiek de perfecte keuze.
-        </p>
+        </div>
       </div>
 
       <div class="card-lift bg-white/5 border border-white/10 rounded-2xl p-6
                   hover:border-[#E8177A]/40 transition-colors reveal d3">
-        <div class="text-[#E8177A] font-bold mb-2">Retro &amp; Old School</div>
-        <p class="text-white/55 text-sm leading-relaxed">
+        <div id="genre-3-titel" class="text-[#E8177A] font-bold mb-2">Retro &amp; Old School</div>
+        <div id="genre-3-tekst" class="text-white/55 text-sm leading-relaxed">
           Jaren '60, '70, '80 en '90 – tijdloze klassiekers die elke generatie samenbrengen.
-        </p>
+        </div>
       </div>
 
       <div class="card-lift bg-white/5 border border-white/10 rounded-2xl p-6
                   hover:border-[#E8177A]/40 transition-colors reveal d1">
-        <div class="text-[#E8177A] font-bold mb-2">Latin &amp; Urban</div>
-        <p class="text-white/55 text-sm leading-relaxed">
+        <div id="genre-4-titel" class="text-[#E8177A] font-bold mb-2">Latin &amp; Urban</div>
+        <div id="genre-4-tekst" class="text-white/55 text-sm leading-relaxed">
           Salsa, reggaeton, R&amp;B en hip-hop – voor een feestje dat de hele nacht doorgaat.
-        </p>
+        </div>
       </div>
 
       <div class="card-lift bg-white/5 border border-white/10 rounded-2xl p-6
                   hover:border-[#E8177A]/40 transition-colors reveal d2">
-        <div class="text-[#E8177A] font-bold mb-2">Lounge &amp; Cocktail</div>
-        <p class="text-white/55 text-sm leading-relaxed">
+        <div id="genre-5-titel" class="text-[#E8177A] font-bold mb-2">Lounge &amp; Cocktail</div>
+        <div id="genre-5-tekst" class="text-white/55 text-sm leading-relaxed">
           Rustige, sfeervolle muziek voor recepties, diners en corporate events.
-        </p>
+        </div>
       </div>
 
       <div class="card-lift bg-white/5 border border-white/10 rounded-2xl p-6
                   hover:border-[#E8177A]/40 transition-colors reveal d3">
-        <div class="text-[#E8177A] font-bold mb-2">Op uw wens</div>
-        <p class="text-white/55 text-sm leading-relaxed">
+        <div id="genre-6-titel" class="text-[#E8177A] font-bold mb-2">Op uw wens</div>
+        <div id="genre-6-tekst" class="text-white/55 text-sm leading-relaxed">
           Specifieke wensen of een favoriete artiest? De playlist wordt volledig op u afgestemd.
-        </p>
+        </div>
       </div>
 
     </div>
@@ -707,7 +705,7 @@
       <h2 class="text-4xl md:text-5xl font-black leading-tight mb-4">
         Informeer of maak<br/>vrijblijvend een afspraak
       </h2>
-      <p class="text-gray-500 text-lg">Stuur uw aanvraag en ik reageer binnen 24 uur.</p>
+      <p id="contact-sub" class="text-gray-500 text-lg">Stuur uw aanvraag en ik reageer binnen 24 uur.</p>
     </div>
 
     <div class="grid md:grid-cols-5 gap-10 items-start">
@@ -868,14 +866,14 @@
 
           <div class="mt-8 pt-6 border-t border-white/10">
             <p class="text-white/40 text-xs uppercase tracking-wide mb-2">Werkgebied</p>
-            <p class="text-white/60 text-sm leading-relaxed">
+            <p id="contact-werkgebied" class="text-white/60 text-sm leading-relaxed">
               Heel België en de grensregio's. Vraag ook gerust voor verre locaties.
             </p>
           </div>
 
           <div class="mt-5 bg-[#E8177A]/12 border border-[#E8177A]/25 rounded-xl p-4">
-            <p class="text-[#E8177A] font-semibold text-sm">Reactie binnen 24 uur</p>
-            <p class="text-white/55 text-sm mt-1">
+            <p id="contact-reactie-titel" class="text-[#E8177A] font-semibold text-sm">Reactie binnen 24 uur</p>
+            <p id="contact-reactie-tekst" class="text-white/55 text-sm mt-1">
               U ontvangt altijd een snelle en persoonlijke reactie op uw aanvraag.
             </p>
           </div>
@@ -1037,19 +1035,81 @@
   // ── Markdown content laden vanuit /content/
   //    Vereist een lokale HTTP-server (zie README.md).
   //    Bij file://-protocol worden de inline fallback-teksten behouden.
-  async function loadMd(file, targetId) {
+  // Laad een enkel .md bestand en injecteer als html (standaard) of platte tekst
+  async function loadMd(file, targetId, mode = 'html') {
     try {
-      const res = await fetch(file);
+      const res  = await fetch(file);
       if (!res.ok) return;
-      const html = marked.parse(await res.text());
+      const text = (await res.text()).trim();
       const el   = document.getElementById(targetId);
-      if (el) el.innerHTML = html;
+      if (!el) return;
+      el[mode === 'text' ? 'textContent' : 'innerHTML'] =
+        mode === 'text' ? text : marked.parse(text);
     } catch { /* stil falen – inline fallback blijft zichtbaar */ }
   }
 
-  loadMd('content/hero.md',  'hero-subtitle');
-  loadMd('content/about.md', 'about-content');
-  loadMd('content/music.md', 'music-intro');
+  // Laad een .md bestand met ## secties en map elke sectie op een element-id
+  // Formaat in het .md bestand:
+  //   ## sectie-naam
+  //   Tekst of markdown inhoud...
+  async function loadMdSections(file, map) {
+    try {
+      const res  = await fetch(file);
+      if (!res.ok) return;
+      const text = await res.text();
+      // Splits op ## koppen
+      const parts = text.split(/^## /m).filter(s => s.trim());
+      parts.forEach(part => {
+        const nl   = part.indexOf('\n');
+        const key  = part.slice(0, nl).trim();
+        const body = part.slice(nl + 1).trim();
+        const cfg  = map[key];
+        if (!cfg) return;
+        const el = document.getElementById(cfg.id);
+        if (!el) return;
+        el[cfg.mode === 'text' ? 'textContent' : 'innerHTML'] =
+          cfg.mode === 'text' ? body : marked.parse(body);
+      });
+    } catch { /* stil falen – inline fallback blijft zichtbaar */ }
+  }
+
+  loadMd('content/hero.md',       'hero-subtitle');
+  loadMd('content/about.md',      'about-content');
+  loadMd('content/music.md',      'music-intro');
+  loadMd('content/hero-tagline.md', 'hero-tagline',  'text');
+  loadMd('content/about-heading.md','about-heading', 'text');
+  loadMd('content/werking-sub.md',  'werking-sub',   'text');
+  loadMd('content/contact-sub.md',  'contact-sub',   'text');
+  loadMd('content/contact-reactie-titel.md', 'contact-reactie-titel', 'text');
+  loadMd('content/contact-reactie-tekst.md', 'contact-reactie-tekst', 'text');
+  loadMd('content/contact-werkgebied.md',    'contact-werkgebied',    'text');
+
+  // ── Sectie-bestanden: één .md per sectie met ## subkoppen
+  loadMdSections('content/werking.md', {
+    'stap1-titel': { id: 'stap1-titel', mode: 'text' },
+    'stap1-tekst': { id: 'stap1-tekst', mode: 'html' },
+    'stap2-titel': { id: 'stap2-titel', mode: 'text' },
+    'stap2-tekst': { id: 'stap2-tekst', mode: 'html' },
+    'stap3-titel': { id: 'stap3-titel', mode: 'text' },
+    'stap3-tekst': { id: 'stap3-tekst', mode: 'html' },
+    'allin-titel': { id: 'allin-titel', mode: 'text' },
+    'allin-tekst': { id: 'allin-tekst', mode: 'html' },
+  });
+
+  loadMdSections('content/genres.md', {
+    'genre-1-titel': { id: 'genre-1-titel', mode: 'text' },
+    'genre-1-tekst': { id: 'genre-1-tekst', mode: 'html' },
+    'genre-2-titel': { id: 'genre-2-titel', mode: 'text' },
+    'genre-2-tekst': { id: 'genre-2-tekst', mode: 'html' },
+    'genre-3-titel': { id: 'genre-3-titel', mode: 'text' },
+    'genre-3-tekst': { id: 'genre-3-tekst', mode: 'html' },
+    'genre-4-titel': { id: 'genre-4-titel', mode: 'text' },
+    'genre-4-tekst': { id: 'genre-4-tekst', mode: 'html' },
+    'genre-5-titel': { id: 'genre-5-titel', mode: 'text' },
+    'genre-5-tekst': { id: 'genre-5-tekst', mode: 'html' },
+    'genre-6-titel': { id: 'genre-6-titel', mode: 'text' },
+    'genre-6-tekst': { id: 'genre-6-tekst', mode: 'html' },
+  });
 
   // ── Contactformulier (demo-modus: toont succesmelding)
   //    Koppel aan Formspree of Netlify Forms voor echte e-mailverzending (zie README).
