@@ -1,13 +1,13 @@
-Hallo, ik ben Andy Veltjen. Mijn passie voor muziek begon vroeg en werd in 2004 omgezet in een professionele carrière als deejay.
+Hallo, ik ben Andy Veltjen. Mijn passie voor muziek begon al op jonge leeftijd en groeide in 2004 uit tot een professionele carrière als DJ.
 
-Met meer dan 20 jaar ervaring begeleidde ik honderden evenementen – van intieme verjaardagsfeestjes tot grootschalige bedrijfsevenementen en sprookjeshuwelijken. Elk evenement is uniek, en dat verdient een unieke aanpak.
+Ondertussen heb ik meer dan 20 jaar ervaring achter de draaitafels en begeleidde ik honderden evenementen, van verjaardagsfeesten en familiefeesten tot bedrijfsevents en huwelijken.
 
-Ik luister naar wat **u** wilt, bespreek de sfeer die u wil neerzetten en stem elk detail af. Het resultaat: een feest dat niemand snel vergeet.
+Geen enkel feest is hetzelfde, en net daarom geloof ik sterk in een persoonlijke aanpak. Ik luister naar jullie verwachtingen, denk mee na over de sfeer en stem alles af tot in de details.
 
 **Waarom kiezen voor Andy Veltjen:**
 
-- 20+ jaar professionele ervaring
-- Uitgebreide muziekbibliotheek van elke stijl en periode
-- Professioneel geluid- en lichtmateriaal inbegrepen
+- Meer dan 20 jaar professionele ervaring
+- Muziek uit alle stijlen en generaties
+- Professioneel licht- en geluidsmateriaal
 - Persoonlijk draaiboek volledig op maat
-- Betrouwbaar, punctueel en altijd bereikbaar
+- Betrouwbare begeleiding van begin tot einde
