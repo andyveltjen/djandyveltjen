@@ -1,1 +1,1 @@
-Van eerste contact tot het laatste nummer, alles tot in de puntjes verzorgd.
+Van de eerste kennismaking tot het laatste nummer, alles perfect voorbereid en verzorgd.
