@@ -119,7 +119,7 @@
 
   <main class="max-w-3xl mx-auto px-6 py-8 space-y-6">
 
-    <!-- ── Basisinformatie ── -->
+    <!-- ── Basisinformatie deel 1 ── -->
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Basisinformatie</h2>
       <div class="grid grid-cols-2 gap-4">
@@ -134,29 +134,6 @@
         <div class="col-span-2">
           <label class="field-label">GSM contactpersoon *</label>
           <input type="tel" id="f-gsm" class="field-input" placeholder="+32 4XX XX XX XX"/>
-        </div>
-        <div class="col-span-2">
-          <label class="field-label">Locatie feest</label>
-          <input type="text" id="f-locatie" class="field-input" placeholder="Feestzaal De Kroon, Gent"/>
-        </div>
-        <div>
-          <label class="field-label">Thema</label>
-          <select id="f-thema" class="field-input">
-            <option value="nee">Nee</option>
-            <option value="ja">Ja</option>
-          </select>
-        </div>
-        <div>
-          <label class="field-label">Thema omschrijving</label>
-          <input type="text" id="f-thema-oms" class="field-input" placeholder="Havana, jaren 80…"/>
-        </div>
-        <div>
-          <label class="field-label">Aantal gasten</label>
-          <input type="number" id="f-gasten" class="field-input" placeholder="150" min="1"/>
-        </div>
-        <div>
-          <label class="field-label">Doelpubliek / mix</label>
-          <input type="text" id="f-doelpubliek" class="field-input" placeholder="Gemengd, 30–60 jaar"/>
         </div>
       </div>
     </section>
@@ -184,6 +161,36 @@
         <div id="afspraak-adres-wrap" class="col-span-2 hidden">
           <label class="field-label">Adres fysieke afspraak</label>
           <input type="text" id="f-afspraak-adres" class="field-input" placeholder="Straat 1, 9000 Gent"/>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Basisinformatie deel 2 ── -->
+    <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <h2 class="font-bold text-gray-800 mb-5">Details evenement</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="col-span-2">
+          <label class="field-label">Locatie feest</label>
+          <input type="text" id="f-locatie" class="field-input" placeholder="Feestzaal De Kroon, Gent"/>
+        </div>
+        <div>
+          <label class="field-label">Thema</label>
+          <select id="f-thema" class="field-input">
+            <option value="nee">Nee</option>
+            <option value="ja">Ja</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Thema omschrijving</label>
+          <input type="text" id="f-thema-oms" class="field-input" placeholder="Havana, jaren 80…"/>
+        </div>
+        <div>
+          <label class="field-label">Aantal gasten</label>
+          <input type="number" id="f-gasten" class="field-input" placeholder="150" min="1"/>
+        </div>
+        <div>
+          <label class="field-label">Doelpubliek / mix</label>
+          <input type="text" id="f-doelpubliek" class="field-input" placeholder="Gemengd, 30–60 jaar"/>
         </div>
       </div>
     </section>
@@ -225,6 +232,24 @@
         <button type="button" class="btn-add mt-1" onclick="addVerloopRow()">
           <span style="font-size:1rem;line-height:1">+</span> Rij toevoegen
         </button>
+      </div>
+      <div class="border-t border-gray-100 mt-6 pt-5 space-y-4">
+        <h3 class="text-sm font-semibold text-gray-600">Opbouw installatie</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="field-label">Uur opbouw</label>
+            <input type="time" id="f-opbouw-uur" class="field-input"/>
+          </div>
+          <div></div>
+          <div>
+            <label class="field-label">Contactpersoon zaal</label>
+            <input type="text" id="f-zaal-naam" class="field-input" placeholder="Jan Janssen"/>
+          </div>
+          <div>
+            <label class="field-label">Telefoon zaal</label>
+            <input type="tel" id="f-zaal-telefoon" class="field-input" placeholder="+32 9XX XX XX XX"/>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -334,7 +359,7 @@ const GENRES = [
   'House','Retro House','Tech house','Trance','Dubstep','Dance','Foute','Polonaise','Schlager','Meedanser',
   'R&B','Hip Hop','Oldschool','Reggae','Dance Hall','Funk','Salsa',
   'Disco','Oldies','Boogie','Wals','Blues','Jazz',
-  '60s','70s','80s','90s','2000','Vandaag',
+  '60s','70s','80s','90s','2000',
 ];
 
 // ── State ─────────────────────────────────────
@@ -579,7 +604,7 @@ function buildGenres() {
 // ── Form: clear ───────────────────────────────
 function clearForm() {
   ['naam','datum','gsm','locatie','thema-oms','gasten','doelpubliek',
-   'geluid','licht','startuur','einduur',
+   'geluid','licht','startuur','einduur','opbouw-uur','zaal-naam','zaal-telefoon',
    'afspraak-datum','afspraak-email','afspraak-adres',
    'gewenst','ongewenst','openingsdans-oms','notities'].forEach(id => {
     const el = document.getElementById('f-' + id);
@@ -608,6 +633,7 @@ function fillForm(d) {
   sv('gasten',d.gasten); sv('doelpubliek',d.doelpubliek);
   sv('geluid',d.geluid); sv('licht',d.licht);
   sv('startuur',d.startuur); sv('einduur',d.einduur);
+  sv('opbouw-uur',d.opbouw_uur); sv('zaal-naam',d.zaal_naam); sv('zaal-telefoon',d.zaal_telefoon);
   sv('afspraak-datum',d.afspraak_datum); sv('afspraak-type',d.afspraak_type||'');
   sv('afspraak-email',d.afspraak_email); sv('afspraak-adres',d.afspraak_adres);
   toggleAfspraak();
@@ -666,6 +692,7 @@ function readForm() {
     afspraak_email: g('afspraak-email'), afspraak_adres: g('afspraak-adres'),
     geluid: g('geluid'), licht: g('licht'),
     startuur: g('startuur'), einduur: g('einduur'),
+    opbouw_uur: g('opbouw-uur'), zaal_naam: g('zaal-naam'), zaal_telefoon: g('zaal-telefoon'),
     verloop_count: verloop.length,
     genres,
     gewenst: g('gewenst'), ongewenst: g('ongewenst'),
