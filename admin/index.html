@@ -18,6 +18,25 @@
     .btn-add { display:inline-flex; align-items:center; gap:.375rem; padding:.375rem .875rem; border-radius:.75rem; border:1px dashed #d1d5db; font-size:.8rem; color:#6b7280; cursor:pointer; transition:all .15s; background:white; }
     .btn-add:hover { border-color:#E8177A; color:#E8177A; background:#fff5f9; }
     .btn-remove { display:flex; align-items:center; justify-content:center; width:1.75rem; height:1.75rem; border-radius:.5rem; border:none; background:none; color:#d1d5db; cursor:pointer; font-size:1rem; line-height:1; flex-shrink:0; }
+    @media print {
+      body > *:not(#print-view) { display:none !important; }
+      #print-view { display:block !important; font-family:Georgia,serif; color:#111; padding:1.5cm 2cm; }
+      .pr-logo { font-size:1.4rem; font-weight:900; color:#E8177A; letter-spacing:-.5px; }
+      .pr-title { font-size:1.6rem; font-weight:700; border-bottom:2px solid #E8177A; padding-bottom:.4rem; margin:1rem 0 1.2rem; }
+      .pr-section { margin-bottom:1.1rem; }
+      .pr-section-title { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#E8177A; margin-bottom:.4rem; }
+      .pr-grid { display:grid; grid-template-columns:1fr 1fr; gap:.25rem .75rem; }
+      .pr-field { display:flex; gap:.35rem; align-items:baseline; font-size:.8rem; line-height:1.5; }
+      .pr-label { font-weight:600; white-space:nowrap; color:#444; }
+      .pr-val { color:#111; }
+      .pr-val-block { font-size:.8rem; line-height:1.5; margin-top:.15rem; white-space:pre-wrap; }
+      .pr-table { width:100%; border-collapse:collapse; font-size:.78rem; margin-top:.3rem; }
+      .pr-table th { font-size:.65rem; text-transform:uppercase; letter-spacing:.06em; color:#666; border-bottom:1px solid #ddd; padding:.2rem .5rem; text-align:left; }
+      .pr-table td { padding:.25rem .5rem; border-bottom:1px solid #f0f0f0; }
+      .pr-genres { display:flex; flex-wrap:wrap; gap:.3rem; margin-top:.3rem; }
+      .pr-genre { background:#fff0f7; color:#E8177A; border:1px solid #fbb; font-size:.72rem; padding:.1rem .45rem; border-radius:.35rem; }
+      .pr-divider { border:none; border-top:1px solid #eee; margin:.8rem 0; }
+    }
     .btn-remove:hover { color:#ef4444; background:#fef2f2; }
   </style>
 </head>
@@ -75,6 +94,10 @@
         <label class="field-label">Tot</label>
         <input type="date" id="f-tot" onchange="renderList()" style="width:auto" class="field-input"/>
       </div>
+      <div>
+        <label class="field-label">Maand</label>
+        <input type="month" id="f-maand" onchange="renderList()" style="width:auto" class="field-input"/>
+      </div>
       <button onclick="clearFilter()" class="px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-500 hover:bg-gray-50">
         Wis filter
       </button>
@@ -112,6 +135,7 @@
     </div>
     <div class="flex items-center gap-3">
       <span id="save-msg" class="text-sm text-gray-400"></span>
+      <button onclick="printEvent()" class="px-4 py-2 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">🖨 Afdrukken</button>
       <button onclick="saveEvent()" class="px-5 py-2 rounded-xl text-white text-sm font-semibold" style="background:#E8177A">Opslaan</button>
       <button onclick="showList()" class="text-sm text-gray-400 hover:text-gray-600">Annuleren</button>
     </div>
@@ -355,6 +379,11 @@
   </main>
 </div>
 
+<!-- ══════════════════════════════════════════
+     PRINT VIEW (alleen zichtbaar bij afdrukken)
+══════════════════════════════════════════ -->
+<div id="print-view" style="display:none"></div>
+
 <script>
 // ── Config ────────────────────────────────────
 const OWNER  = 'andyveltjen';
@@ -561,11 +590,13 @@ async function loadEvents() {
 
 // ── Render list ───────────────────────────────
 function renderList() {
-  const van = document.getElementById('f-van').value;
-  const tot = document.getElementById('f-tot').value;
+  const van   = document.getElementById('f-van').value;
+  const tot   = document.getElementById('f-tot').value;
+  const maand = document.getElementById('f-maand').value;
   let rows = events;
-  if (van) rows = rows.filter(e => (e.data.datum || '') >= van);
-  if (tot) rows = rows.filter(e => (e.data.datum || '') <= tot);
+  if (van)   rows = rows.filter(e => (e.data.datum || '') >= van);
+  if (tot)   rows = rows.filter(e => (e.data.datum || '') <= tot);
+  if (maand) rows = rows.filter(e => (e.data.datum || '').startsWith(maand));
   document.getElementById('list-count').textContent = rows.length === 1 ? '1 boeking' : `${rows.length} boekingen`;
   const tbody = document.getElementById('list-tbody');
   tbody.innerHTML = '';
@@ -601,7 +632,108 @@ function renderList() {
 function clearFilter() {
   document.getElementById('f-van').value = '';
   document.getElementById('f-tot').value = '';
+  document.getElementById('f-maand').value = '';
   renderList();
+}
+
+// ── Print / PDF ───────────────────────────────
+function printEvent() {
+  const d = readForm();
+  const verloop = readVerloop().filter(v => v.s || v.e || v.o);
+  const volgnums = readVolgnummers();
+  const genres = [...document.querySelectorAll('#genres-wrap input[type=checkbox]:checked')].map(cb => cb.value);
+  const datumStr = d.datum ? new Date(d.datum + 'T12:00:00').toLocaleDateString('nl-BE', { day:'2-digit', month:'long', year:'numeric' }) : '—';
+  const afspraakStr = d.afspraak_datum ? new Date(d.afspraak_datum + 'T12:00:00').toLocaleDateString('nl-BE', { day:'2-digit', month:'long', year:'numeric' }) : '';
+
+  function row(label, val) {
+    if (!val) return '';
+    return `<div class="pr-field"><span class="pr-label">${label}:</span><span class="pr-val">${esc(val)}</span></div>`;
+  }
+
+  const html = `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem">
+      <div class="pr-logo">DJ Andy Veltjen</div>
+      <div style="font-size:.75rem;color:#666;text-align:right">muziek op maat van uw concept</div>
+    </div>
+    <div class="pr-title">Draaiboek</div>
+
+    <div class="pr-section">
+      <div class="pr-section-title">Basisinformatie</div>
+      <div class="pr-grid">
+        ${row('Naam', d.naam)}
+        ${row('Datum feest', datumStr)}
+        ${row('GSM contactpersoon', d.gsm)}
+        ${row('Locatie feest', d.locatie)}
+        ${row('Thema', d.thema === 'ja' ? (d.thema_oms || 'Ja') : 'Nee')}
+        ${row('Aantal gasten', d.gasten)}
+        ${row('Doelpubliek / mix', d.doelpubliek)}
+      </div>
+    </div>
+
+    ${afspraakStr ? `<div class="pr-section">
+      <div class="pr-section-title">Afspraak draaiboek</div>
+      <div class="pr-grid">
+        ${row('Datum afspraak', afspraakStr)}
+        ${row('Type', d.afspraak_type)}
+        ${row('E-mail', d.afspraak_email)}
+        ${row('Adres', d.afspraak_adres)}
+      </div>
+    </div>` : ''}
+
+    ${(d.geluid || d.licht) ? `<div class="pr-section">
+      <div class="pr-section-title">Installatie uitbreiding</div>
+      <div class="pr-grid">
+        ${row('Geluid', d.geluid)}
+        ${row('Licht', d.licht)}
+      </div>
+    </div>` : ''}
+
+    <div class="pr-section">
+      <div class="pr-section-title">Tijden & Verloop</div>
+      <div class="pr-grid" style="margin-bottom:.4rem">
+        ${row('Startuur', d.startuur)}
+        ${row('Einduur', d.einduur)}
+        ${row('Uur opbouw', d.opbouw_uur)}
+      </div>
+      ${verloop.length ? `<table class="pr-table">
+        <thead><tr><th>Start</th><th>Einde</th><th>Omschrijving</th></tr></thead>
+        <tbody>${verloop.map(v => `<tr><td>${esc(v.s)}</td><td>${esc(v.e)}</td><td>${esc(v.o)}</td></tr>`).join('')}</tbody>
+      </table>` : ''}
+      ${(d.zaal_naam || d.zaal_telefoon) ? `<div class="pr-grid" style="margin-top:.4rem">
+        ${row('Contactpersoon zaal', d.zaal_naam)}
+        ${row('Telefoon zaal', d.zaal_telefoon)}
+      </div>` : ''}
+    </div>
+
+    ${genres.length ? `<div class="pr-section">
+      <div class="pr-section-title">Genres</div>
+      <div class="pr-genres">${genres.map(g => `<span class="pr-genre">${esc(g)}</span>`).join('')}</div>
+    </div>` : ''}
+
+    ${(d.gewenst || d.ongewenst) ? `<div class="pr-section">
+      <div class="pr-section-title">Muziekwensen</div>
+      ${d.gewenst ? `<div class="pr-field"><span class="pr-label">Gewenst:</span></div><div class="pr-val-block">${esc(d.gewenst)}</div>` : ''}
+      ${d.ongewenst ? `<div class="pr-field" style="margin-top:.3rem"><span class="pr-label">Ongewenst:</span></div><div class="pr-val-block">${esc(d.ongewenst)}</div>` : ''}
+    </div>` : ''}
+
+    <div class="pr-section">
+      <div class="pr-section-title">Specials</div>
+      <div class="pr-grid">
+        ${row('Openingsdans', d.openingsdans === 'ja' ? (d.openingsdans_oms || 'Ja') : 'Nee')}
+        ${row('Input publiek', d.input_publiek === 'ja' ? 'Ja (boodschapkaartjes)' : 'Nee')}
+      </div>
+      ${volgnums.length ? `<div style="margin-top:.3rem"><div class="pr-field"><span class="pr-label">Volgnummer(s):</span></div>
+        <ul style="margin:.2rem 0 0 1rem;font-size:.8rem">${volgnums.map(v => `<li>${esc(v)}</li>`).join('')}</ul></div>` : row('Volgnummer(s)', 'Nee')}
+    </div>
+
+    ${d.notities ? `<div class="pr-section">
+      <div class="pr-section-title">Notities</div>
+      <div class="pr-val-block">${esc(d.notities)}</div>
+    </div>` : ''}
+  `;
+
+  document.getElementById('print-view').innerHTML = html;
+  window.print();
 }
 
 // ── Genres ────────────────────────────────────
