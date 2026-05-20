@@ -136,6 +136,7 @@
     </div>
     <div class="flex items-center gap-3">
       <span id="save-msg" class="text-sm text-gray-400"></span>
+      <button onclick="addToCalendar()" class="px-4 py-2 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">📅 Agenda</button>
       <button onclick="printEvent()" class="px-4 py-2 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">🖨 Afdrukken</button>
       <button onclick="saveEvent()" class="px-5 py-2 rounded-xl text-white text-sm font-semibold" style="background:#E8177A">Opslaan</button>
       <button onclick="showList()" class="text-sm text-gray-400 hover:text-gray-600">Annuleren</button>
@@ -635,6 +636,68 @@ function clearFilter() {
   document.getElementById('f-tot').value = '';
   document.getElementById('f-maand').value = '';
   renderList();
+}
+
+// ── Agenda (.ics) ─────────────────────────────
+function addToCalendar() {
+  const d = readForm();
+  if (!d.naam || !d.datum) { alert('Vul minstens naam en datum in.'); return; }
+
+  function icsDate(date, time) {
+    const [y, m, day] = date.split('-');
+    if (!time) return `${y}${m}${day}`;
+    const [h, min] = time.split(':');
+    return `${y}${m}${day}T${h}${min}00`;
+  }
+
+  // Einduur vóór startuur = eindigt de volgende dag
+  let eindDatum = d.datum;
+  if (d.startuur && d.einduur && d.einduur < d.startuur) {
+    const next = new Date(d.datum + 'T12:00:00');
+    next.setDate(next.getDate() + 1);
+    eindDatum = next.toISOString().slice(0, 10);
+  }
+
+  const start = d.startuur ? icsDate(d.datum, d.startuur)   : icsDate(d.datum, '');
+  const end   = d.einduur  ? icsDate(eindDatum, d.einduur)   : icsDate(eindDatum, '');
+  const allDay = !d.startuur;
+  const dtStart = allDay ? `DTSTART;VALUE=DATE:${start}` : `DTSTART:${start}`;
+  const dtEnd   = allDay ? `DTEND;VALUE=DATE:${end}`     : `DTEND:${end}`;
+
+  const beschrijving = [
+    d.gsm       ? `GSM: ${d.gsm}`             : '',
+    d.gasten    ? `Gasten: ${d.gasten}`        : '',
+    d.doelpubliek ? `Publiek: ${d.doelpubliek}`: '',
+    d.notities  ? `Notities: ${d.notities}`    : '',
+  ].filter(Boolean).join('\\n');
+
+  const uid = `${d.datum}-${d.naam.replace(/\s+/g,'-').toLowerCase()}-${Date.now()}@djandyveltjen.be`;
+  const now = new Date().toISOString().replace(/[-:]/g,'').slice(0,15) + 'Z';
+
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//DJ Andy Veltjen//Backoffice//NL',
+    'CALSCALE:GREGORIAN',
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    `DTSTAMP:${now}`,
+    dtStart,
+    dtEnd,
+    `SUMMARY:🎧 ${d.naam}`,
+    d.locatie   ? `LOCATION:${d.locatie}`      : '',
+    beschrijving ? `DESCRIPTION:${beschrijving}` : '',
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].filter(Boolean).join('\r\n');
+
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `${d.datum}-${d.naam.replace(/\s+/g,'-')}.ics`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
 // ── Print / PDF ───────────────────────────────
