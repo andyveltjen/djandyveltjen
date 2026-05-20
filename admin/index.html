@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Backoffice — DJ Andy Veltjen</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .field-label { display:block; font-size:.75rem; font-weight:500; color:#6b7280; margin-bottom:.375rem; }
+    .field-input { width:100%; padding:.625rem 1rem; border-radius:.75rem; border:1px solid #e5e7eb; font-size:.875rem; outline:none; background:white; transition:border-color .15s,box-shadow .15s; }
+    .field-input:focus { border-color:#E8177A; box-shadow:0 0 0 3px rgba(232,23,122,.12); }
+    textarea.field-input { resize:vertical; }
+    input[type=checkbox] { accent-color:#E8177A; }
+    .view { display:none; }
+    .view.active { display:block; }
+    #view-login.active { display:flex; }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen" style="font-family:system-ui,-apple-system,sans-serif">
+
+<!-- ══════════════════════════════════════════
+     LOGIN
+══════════════════════════════════════════ -->
+<div id="view-login" class="view min-h-screen items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm">
+    <div class="text-center mb-8">
+      <div class="font-black text-2xl mb-1" style="color:#E8177A">DJ Andy Veltjen</div>
+      <div class="text-gray-400 text-sm">Backoffice · Boekingen</div>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="field-label">GitHub Personal Access Token</label>
+        <input id="inp-token" type="password" class="field-input" placeholder="ghp_…"
+               onkeydown="if(event.key==='Enter')login()"/>
+      </div>
+      <p id="login-err" class="hidden text-red-500 text-xs text-center"></p>
+      <button onclick="login()"
+              class="w-full py-3 rounded-xl text-white font-bold text-sm transition hover:-translate-y-0.5"
+              style="background:#E8177A">
+        Inloggen
+      </button>
+    </div>
+    <p class="text-xs text-gray-400 text-center mt-5">
+      Token met <code class="bg-gray-100 px-1 rounded">repo</code> scope vereist.
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     LIJST
+══════════════════════════════════════════ -->
+<div id="view-list" class="view">
+  <header class="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+    <div>
+      <span class="font-black text-xl" style="color:#E8177A">DJ Andy Veltjen</span>
+      <span class="text-gray-400 text-sm ml-3">Backoffice</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="showEdit(null)"
+              class="px-4 py-2 rounded-xl text-white text-sm font-semibold"
+              style="background:#E8177A">
+        + Nieuwe boeking
+      </button>
+      <button onclick="logout()" class="text-sm text-gray-400 hover:text-gray-600">Uitloggen</button>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 py-8">
+    <div class="flex items-end gap-4 mb-6 flex-wrap">
+      <div>
+        <label class="field-label">Van</label>
+        <input type="date" id="f-van" onchange="renderList()" style="width:auto" class="field-input"/>
+      </div>
+      <div>
+        <label class="field-label">Tot</label>
+        <input type="date" id="f-tot" onchange="renderList()" style="width:auto" class="field-input"/>
+      </div>
+      <button onclick="clearFilter()"
+              class="px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-500 hover:bg-gray-50">
+        Wis filter
+      </button>
+      <span id="list-count" class="ml-auto text-sm text-gray-400"></span>
+    </div>
+
+    <div id="list-loading" class="text-center py-20 text-gray-400 text-sm">Boekingen laden…</div>
+    <div id="list-empty" class="hidden text-center py-20 text-gray-400 text-sm">Geen boekingen gevonden.</div>
+
+    <div id="list-wrap" class="hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-100 text-xs font-semibold text-gray-400 uppercase tracking-wide">
+            <th class="text-left px-5 py-3">Datum</th>
+            <th class="text-left px-5 py-3">Naam</th>
+            <th class="text-left px-5 py-3">Locatie</th>
+            <th class="text-left px-5 py-3">Gasten</th>
+            <th class="text-left px-5 py-3">Uren</th>
+            <th class="px-5 py-3"></th>
+          </tr>
+        </thead>
+        <tbody id="list-tbody"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- ══════════════════════════════════════════
+     BEWERKEN
+══════════════════════════════════════════ -->
+<div id="view-edit" class="view">
+  <header class="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+    <div class="flex items-center gap-3">
+      <button onclick="showList()" class="text-gray-400 hover:text-gray-600 text-sm">← Terug</button>
+      <span class="font-black text-xl" style="color:#E8177A">DJ Andy Veltjen</span>
+      <span id="edit-subtitle" class="text-gray-400 text-sm">Nieuwe boeking</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span id="save-msg" class="text-sm text-gray-400"></span>
+      <button onclick="saveEvent()"
+              class="px-5 py-2 rounded-xl text-white text-sm font-semibold"
+              style="background:#E8177A">
+        Opslaan
+      </button>
+      <button onclick="showList()" class="text-sm text-gray-400 hover:text-gray-600">Annuleren</button>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-6 py-8 space-y-6">
+
+    <!-- Basisinformatie -->
+    <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <h2 class="font-bold text-gray-800 mb-5">Basisinformatie</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="field-label">Naam *</label>
+          <input type="text" id="f-naam" class="field-input" placeholder="Bruiloft Janssen"/>
+        </div>
+        <div>
+          <label class="field-label">Datum feest *</label>
+          <input type="date" id="f-datum" class="field-input"/>
+        </div>
+        <div class="col-span-2">
+          <label class="field-label">Locatie feest</label>
+          <input type="text" id="f-locatie" class="field-input" placeholder="Feestzaal De Kroon, Gent"/>
+        </div>
+        <div>
+          <label class="field-label">Thema</label>
+          <select id="f-thema" class="field-input">
+            <option value="nee">Nee</option>
+            <option value="ja">Ja</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Thema omschrijving</label>
+          <input type="text" id="f-thema-oms" class="field-input" placeholder="Havana, jaren 80…"/>
+        </div>
+        <div>
+          <label class="field-label">Aantal gasten</label>
+          <input type="number" id="f-gasten" class="field-input" placeholder="150" min="1"/>
+        </div>
+        <div>
+          <label class="field-label">Doelpubliek / mix</label>
+          <input type="text" id="f-doelpubliek" class="field-input" placeholder="Gemengd, 30–60 jaar"/>
+        </div>
+      </div>
+    </section>
+
+    <!-- Installatie -->
+    <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <h2 class="font-bold text-gray-800 mb-5">Installatie uitbreiding</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="field-label">Geluid omschrijving</label>
+          <input type="text" id="f-geluid" class="field-input" placeholder="Extra subwoofer…"/>
+        </div>
+        <div>
+          <label class="field-label">Licht omschrijving</label>
+          <input type="text" id="f-licht" class="field-input" placeholder="Moving heads…"/>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tijden & Verloop -->
+    <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <h2 class="font-bold text-gray-800 mb-5">Tijden & Verloop</h2>
+      <div class="grid grid-cols-2 gap-4 mb-5">
+        <div>
+          <label class="field-label">Startuur</label>
+          <input type="time" id="f-startuur" class="field-input"/>
+        </div>
+        <div>
+          <label class="field-label">Einduur</label>
+          <input type="time" id="f-einduur" class="field-input"/>
+        </div>
+      </div>
+      <div class="space-y-2">
+        <div class="grid gap-3 text-xs font-semibold text-gray-400 uppercase tracking-wide px-1"
+             style="grid-template-columns:90px 90px 1fr">
+          <span>Start</span><span>Einde</span><span>Omschrijving</span>
+        </div>
+        <div class="grid gap-3 items-center" style="grid-template-columns:90px 90px 1fr">
+          <input type="time" id="f-v1s" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
+          <input type="time" id="f-v1e" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
+          <input type="text" id="f-v1o" class="field-input" placeholder="Ontvangst, aperitief…"/>
+        </div>
+        <div class="grid gap-3 items-center" style="grid-template-columns:90px 90px 1fr">
+          <input type="time" id="f-v2s" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
+          <input type="time" id="f-v2e" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
+          <input type="text" id="f-v2o" class="field-input" placeholder="Diner…"/>
+        </div>
+        <div class="grid gap-3 items-center" style="grid-template-columns:90px 90px 1fr">
+          <input type="time" id="f-v3s" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
+          <input type="time" id="f-v3e" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
+          <input type="text" id="f-v3o" class="field-input" placeholder="Feest, dans…"/>
+        </div>
+        <div class="grid gap-3 items-center" style="grid-template-columns:90px 90px 1fr">
+          <input type="time" id="f-v4s" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
+          <input type="time" id="f-v4e" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
+          <input type="text" id="f-v4o" class="field-input" placeholder="Afsluiting…"/>
+        </div>
+      </div>
+    </section>
+
+    <!-- Genres -->
+    <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <h2 class="font-bold text-gray-800 mb-5">Genres</h2>
+      <div id="genres-wrap" class="grid grid-cols-5 gap-x-4 gap-y-2.5 text-sm"></div>
+    </section>
+
+    <!-- Muziekwensen -->
+    <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <h2 class="font-bold text-gray-800 mb-5">Muziekwensen</h2>
+      <div class="space-y-4">
+        <div>
+          <label class="field-label">Gewenst</label>
+          <textarea id="f-gewenst" rows="3" class="field-input"
+                    placeholder="Nummers / artiesten die zeker moeten spelen…"></textarea>
+        </div>
+        <div>
+          <label class="field-label">Ongewenst</label>
+          <textarea id="f-ongewenst" rows="3" class="field-input"
+                    placeholder="Nummers / artiesten die absoluut niet mogen…"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- Specials -->
+    <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <h2 class="font-bold text-gray-800 mb-5">Specials</h2>
+      <div class="space-y-4">
+        <div class="grid gap-4" style="grid-template-columns:130px 1fr">
+          <div>
+            <label class="field-label">Openingsdans</label>
+            <select id="f-openingsdans" class="field-input">
+              <option value="nee">Nee</option>
+              <option value="ja">Ja</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Omschrijving</label>
+            <input type="text" id="f-openingsdans-oms" class="field-input" placeholder="Artiest — Nummer"/>
+          </div>
+        </div>
+        <div class="grid gap-4" style="grid-template-columns:130px 1fr">
+          <div>
+            <label class="field-label">Volgnummer(s)</label>
+            <select id="f-volgnummers" class="field-input">
+              <option value="nee">Nee</option>
+              <option value="ja">Ja</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Omschrijving</label>
+            <input type="text" id="f-volgnummers-oms" class="field-input" placeholder="Artiest — Nummer"/>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="field-label">Lijst opstellen</label>
+            <select id="f-lijst" class="field-input">
+              <option value="nee">Nee</option>
+              <option value="ja">Ja</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Input publiek</label>
+            <select id="f-input-publiek" class="field-input">
+              <option value="nee">Nee</option>
+              <option value="ja">Ja</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notities -->
+    <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <h2 class="font-bold text-gray-800 mb-5">Notities</h2>
+      <textarea id="f-notities" rows="4" class="field-input"
+                placeholder="Extra opmerkingen, afspraken, bereikbaarheid, betaling…"></textarea>
+    </section>
+
+    <div class="flex justify-between items-center pb-10">
+      <button id="btn-delete" onclick="deleteEvent()"
+              class="hidden px-4 py-2.5 rounded-xl border border-red-200 text-red-500 text-sm hover:bg-red-50">
+        Verwijderen
+      </button>
+      <div class="flex gap-3 ml-auto">
+        <button onclick="showList()"
+                class="px-5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">
+          Annuleren
+        </button>
+        <button onclick="saveEvent()"
+                class="px-6 py-2.5 rounded-xl text-white text-sm font-semibold"
+                style="background:#E8177A">
+          Opslaan
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ── Config ────────────────────────────────────
+const OWNER  = 'andyveltjen';
+const REPO   = 'djandyveltjen';
+const BRANCH = 'main';
+const DIR    = 'events';
+
+const GENRES = [
+  'Rock','Pop','Ultratop','StuBru','New wave','Slow','Latin','2step','Lounge',
+  'House','Retro','Tech house','Trance','Dubstep','Dance','Foute','Polonaise','Schlager','Meedanser',
+  'R&B','Hip Hop','Oldschool','Reggae','Dance Hall','Funk','Salsa','Samba','Bachata',
+  'Disco','Oldies','Swing','Boogie','Wals','Blues','Jazz',
+  '60s','70s','80s','90s','2000','Vandaag',
+];
+
+// ── State ─────────────────────────────────────
+let token = sessionStorage.getItem('gh_token') || '';
+let events = [];
+let editPath = null;
+let editSha  = null;
+
+// ── View routing ──────────────────────────────
+function show(id) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showList() {
+  show('view-list');
+  loadEvents();
+}
+
+function showEdit(path) {
+  editPath = path;
+  editSha  = null;
+  document.getElementById('edit-subtitle').textContent = path ? 'Bewerken' : 'Nieuwe boeking';
+  document.getElementById('btn-delete').classList.toggle('hidden', !path);
+  document.getElementById('save-msg').textContent = '';
+  buildGenres();
+  clearForm();
+  if (path) {
+    const ev = events.find(e => e.path === path);
+    if (ev) { editSha = ev.sha; fillForm(ev.data); }
+  }
+  show('view-edit');
+  window.scrollTo(0, 0);
+}
+
+// ── GitHub API ────────────────────────────────
+async function gh(path, opts = {}) {
+  const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}${path}`, {
+    ...opts,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+      ...(opts.headers || {}),
+    },
+  });
+  if (res.status === 401) { logout(); throw new Error('Sessie verlopen.'); }
+  return res;
+}
+
+async function ghGet(path) {
+  const res = await gh(path);
+  if (!res.ok) throw new Error(`${res.status} ${path}`);
+  return res.json();
+}
+
+async function ghPut(path, body) {
+  const res = await gh(path, { method: 'PUT', body: JSON.stringify(body) });
+  if (!res.ok) {
+    const e = await res.json().catch(() => ({}));
+    throw new Error(e.message || `${res.status}`);
+  }
+  return res.json();
+}
+
+async function ghDel(path, sha, msg) {
+  const res = await gh(path, {
+    method: 'DELETE',
+    body: JSON.stringify({ message: msg, sha, branch: BRANCH }),
+  });
+  if (!res.ok) throw new Error(`${res.status}`);
+}
+
+// ── Auth ──────────────────────────────────────
+async function login() {
+  const t = document.getElementById('inp-token').value.trim();
+  if (!t) return;
+  token = t;
+  const errEl = document.getElementById('login-err');
+  errEl.classList.add('hidden');
+  try {
+    const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}`, {
+      headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github.v3+json' },
+    });
+    if (!res.ok) throw new Error();
+    sessionStorage.setItem('gh_token', token);
+    showList();
+  } catch {
+    token = '';
+    errEl.textContent = 'Token ongeldig of geen toegang tot de repo.';
+    errEl.classList.remove('hidden');
+  }
+}
+
+function logout() {
+  token = '';
+  sessionStorage.removeItem('gh_token');
+  show('view-login');
+}
+
+// ── Frontmatter ───────────────────────────────
+function parseFm(raw) {
+  const m = raw.match(/^---\n([\s\S]*?)\n---/);
+  if (!m) return {};
+  const obj = {};
+  for (const line of m[1].split('\n')) {
+    const i = line.indexOf(':');
+    if (i < 0) continue;
+    const k = line.slice(0, i).trim();
+    const v = line.slice(i + 1).trim().replace(/^"(.*)"$/, '$1');
+    obj[k] = v.replace(/\\n/g, '\n');
+  }
+  return obj;
+}
+
+function buildFm(obj) {
+  const lines = ['---'];
+  for (const [k, v] of Object.entries(obj)) {
+    const s = String(v ?? '').replace(/\n/g, '\\n');
+    const q = s.includes(':') || s.includes('#') || s.startsWith('"');
+    lines.push(`${k}: ${q ? `"${s.replace(/"/g, '\\"')}"` : s}`);
+  }
+  lines.push('---', '');
+  return lines.join('\n');
+}
+
+// ── Load events ───────────────────────────────
+async function loadEvents() {
+  document.getElementById('list-loading').classList.remove('hidden');
+  document.getElementById('list-wrap').classList.add('hidden');
+  document.getElementById('list-empty').classList.add('hidden');
+  events = [];
+  try {
+    let files = [];
+    try { files = await ghGet(`/contents/${DIR}?ref=${BRANCH}`); } catch { /* dir not yet created */ }
+    const mdFiles = Array.isArray(files) ? files.filter(f => f.name.endsWith('.md')) : [];
+    const settled = await Promise.allSettled(mdFiles.map(async f => {
+      const file = await ghGet(`/contents/${f.path}?ref=${BRANCH}`);
+      const raw  = decodeURIComponent(escape(atob(file.content.replace(/\s/g, ''))));
+      return { sha: file.sha, path: f.path, data: parseFm(raw) };
+    }));
+    events = settled
+      .filter(r => r.status === 'fulfilled').map(r => r.value)
+      .sort((a, b) => (a.data.datum || '').localeCompare(b.data.datum || ''));
+  } catch (err) { console.error(err); }
+  document.getElementById('list-loading').classList.add('hidden');
+  renderList();
+}
+
+// ── Render list ───────────────────────────────
+function renderList() {
+  const van = document.getElementById('f-van').value;
+  const tot = document.getElementById('f-tot').value;
+  let rows = events;
+  if (van) rows = rows.filter(e => (e.data.datum || '') >= van);
+  if (tot) rows = rows.filter(e => (e.data.datum || '') <= tot);
+
+  document.getElementById('list-count').textContent =
+    rows.length === 1 ? '1 boeking' : `${rows.length} boekingen`;
+
+  const tbody = document.getElementById('list-tbody');
+  tbody.innerHTML = '';
+
+  if (!rows.length) {
+    document.getElementById('list-empty').classList.remove('hidden');
+    document.getElementById('list-wrap').classList.add('hidden');
+    return;
+  }
+  document.getElementById('list-empty').classList.add('hidden');
+  document.getElementById('list-wrap').classList.remove('hidden');
+
+  for (const ev of rows) {
+    const d = ev.data;
+    const dateStr = d.datum
+      ? new Date(d.datum + 'T12:00:00').toLocaleDateString('nl-BE', { day:'2-digit', month:'2-digit', year:'numeric' })
+      : '—';
+    const uren = d.startuur && d.einduur ? `${d.startuur}–${d.einduur}` : '—';
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors';
+    tr.innerHTML = `
+      <td class="px-5 py-3.5 text-gray-600 whitespace-nowrap">${dateStr}</td>
+      <td class="px-5 py-3.5 font-medium">${esc(d.naam || '—')}</td>
+      <td class="px-5 py-3.5 text-gray-500">${esc(d.locatie || '—')}</td>
+      <td class="px-5 py-3.5 text-gray-500">${esc(d.gasten || '—')}</td>
+      <td class="px-5 py-3.5 text-gray-500 whitespace-nowrap">${esc(uren)}</td>
+      <td class="px-5 py-3.5 text-right">
+        <button class="text-xs px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-white"
+                onclick="event.stopPropagation();showEdit('${ev.path}')">Bewerken</button>
+      </td>`;
+    tr.onclick = () => showEdit(ev.path);
+    tbody.appendChild(tr);
+  }
+}
+
+function clearFilter() {
+  document.getElementById('f-van').value = '';
+  document.getElementById('f-tot').value = '';
+  renderList();
+}
+
+// ── Genre checkboxes ──────────────────────────
+function buildGenres() {
+  const wrap = document.getElementById('genres-wrap');
+  if (wrap.children.length) return;
+  wrap.innerHTML = GENRES.map(g =>
+    `<label class="flex items-center gap-1.5 cursor-pointer select-none">
+       <input type="checkbox" name="genre" value="${esc(g)}" class="w-3.5 h-3.5 rounded flex-shrink-0"/>
+       <span class="text-sm text-gray-700">${esc(g)}</span>
+     </label>`
+  ).join('');
+}
+
+// ── Form helpers ──────────────────────────────
+function clearForm() {
+  ['naam','datum','locatie','thema-oms','gasten','doelpubliek','geluid','licht',
+   'startuur','einduur','v1s','v1e','v1o','v2s','v2e','v2o','v3s','v3e','v3o','v4s','v4e','v4o',
+   'gewenst','ongewenst','openingsdans-oms','volgnummers-oms','notities'].forEach(id => {
+    const el = document.getElementById('f-' + id);
+    if (el) el.value = '';
+  });
+  ['thema','openingsdans','volgnummers','lijst','input-publiek'].forEach(id => {
+    const el = document.getElementById('f-' + id);
+    if (el) el.value = 'nee';
+  });
+  document.querySelectorAll('#genres-wrap input[type=checkbox]').forEach(cb => cb.checked = false);
+}
+
+function fillForm(d) {
+  const s = (id, val) => { const el = document.getElementById('f-'+id); if (el && val != null) el.value = val; };
+  s('naam',d.naam); s('datum',d.datum); s('locatie',d.locatie);
+  s('thema',d.thema); s('thema-oms',d.thema_oms);
+  s('gasten',d.gasten); s('doelpubliek',d.doelpubliek);
+  s('geluid',d.geluid); s('licht',d.licht);
+  s('startuur',d.startuur); s('einduur',d.einduur);
+  s('v1s',d.v1s); s('v1e',d.v1e); s('v1o',d.v1o);
+  s('v2s',d.v2s); s('v2e',d.v2e); s('v2o',d.v2o);
+  s('v3s',d.v3s); s('v3e',d.v3e); s('v3o',d.v3o);
+  s('v4s',d.v4s); s('v4e',d.v4e); s('v4o',d.v4o);
+  s('gewenst',d.gewenst); s('ongewenst',d.ongewenst);
+  s('openingsdans',d.openingsdans); s('openingsdans-oms',d.openingsdans_oms);
+  s('volgnummers',d.volgnummers); s('volgnummers-oms',d.volgnummers_oms);
+  s('lijst',d.lijst); s('input-publiek',d.input_publiek);
+  s('notities',d.notities);
+  if (d.genres) {
+    const active = d.genres.split(',').map(x => x.trim());
+    document.querySelectorAll('#genres-wrap input[type=checkbox]').forEach(cb => {
+      cb.checked = active.includes(cb.value);
+    });
+  }
+}
+
+function readForm() {
+  const g = id => (document.getElementById('f-'+id)?.value || '').trim();
+  const genres = [...document.querySelectorAll('#genres-wrap input[type=checkbox]:checked')]
+    .map(cb => cb.value).join(',');
+  return {
+    naam: g('naam'), datum: g('datum'), locatie: g('locatie'),
+    thema: g('thema'), thema_oms: g('thema-oms'),
+    gasten: g('gasten'), doelpubliek: g('doelpubliek'),
+    geluid: g('geluid'), licht: g('licht'),
+    startuur: g('startuur'), einduur: g('einduur'),
+    v1s: g('v1s'), v1e: g('v1e'), v1o: g('v1o'),
+    v2s: g('v2s'), v2e: g('v2e'), v2o: g('v2o'),
+    v3s: g('v3s'), v3e: g('v3e'), v3o: g('v3o'),
+    v4s: g('v4s'), v4e: g('v4e'), v4o: g('v4o'),
+    genres,
+    gewenst: g('gewenst'), ongewenst: g('ongewenst'),
+    openingsdans: g('openingsdans'), openingsdans_oms: g('openingsdans-oms'),
+    volgnummers: g('volgnummers'), volgnummers_oms: g('volgnummers-oms'),
+    lijst: g('lijst'), input_publiek: g('input-publiek'),
+    notities: g('notities'),
+  };
+}
+
+// ── Save ──────────────────────────────────────
+async function saveEvent() {
+  const data = readForm();
+  if (!data.naam || !data.datum) { alert('Naam en datum zijn verplicht.'); return; }
+
+  const msgEl = document.getElementById('save-msg');
+  msgEl.textContent = 'Opslaan…';
+
+  try {
+    const content = buildFm(data);
+    const encoded = btoa(unescape(encodeURIComponent(content)));
+    const slug = data.naam.toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const newPath = `${DIR}/${data.datum}-${slug}.md`;
+    const body = {
+      message: editPath ? `Boeking bijgewerkt: ${data.naam}` : `Nieuwe boeking: ${data.naam}`,
+      content: encoded,
+      branch: BRANCH,
+    };
+
+    if (editPath && editPath !== newPath && editSha) {
+      // Naam of datum gewijzigd → oud bestand verwijderen, nieuw aanmaken
+      await ghDel(`/contents/${editPath}`, editSha, `Boeking hernoemd: ${editPath}`);
+      await ghPut(`/contents/${newPath}`, body);
+    } else if (editPath) {
+      if (editSha) body.sha = editSha;
+      await ghPut(`/contents/${editPath}`, body);
+    } else {
+      await ghPut(`/contents/${newPath}`, body);
+    }
+
+    msgEl.textContent = '✓ Opgeslagen';
+    setTimeout(showList, 800);
+  } catch (err) {
+    msgEl.textContent = '';
+    alert('Fout bij opslaan: ' + err.message);
+  }
+}
+
+// ── Delete ────────────────────────────────────
+async function deleteEvent() {
+  if (!editPath || !editSha) return;
+  const naam = document.getElementById('f-naam').value || editPath;
+  if (!confirm(`"${naam}" definitief verwijderen?`)) return;
+  try {
+    await ghDel(`/contents/${editPath}`, editSha, `Boeking verwijderd: ${naam}`);
+    showList();
+  } catch (err) {
+    alert('Fout bij verwijderen: ' + err.message);
+  }
+}
+
+// ── Util ──────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Init ──────────────────────────────────────
+token ? showList() : show('view-login');
+</script>
+</body>
+</html>
