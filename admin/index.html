@@ -199,13 +199,21 @@
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Installatie uitbreiding</h2>
       <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="field-label">Geluid omschrijving</label>
-          <input type="text" id="f-geluid" class="field-input" placeholder="Extra subwoofer…"/>
+        <div class="space-y-2">
+          <label class="field-label">Geluid</label>
+          <select id="f-geluid-nodig" class="field-input" onchange="toggleInstallatie('geluid')">
+            <option value="nee">Niet nodig</option>
+            <option value="ja">Uitbreiding nodig</option>
+          </select>
+          <input type="text" id="f-geluid" class="field-input hidden" placeholder="Extra subwoofer…"/>
         </div>
-        <div>
-          <label class="field-label">Licht omschrijving</label>
-          <input type="text" id="f-licht" class="field-input" placeholder="Moving heads…"/>
+        <div class="space-y-2">
+          <label class="field-label">Licht</label>
+          <select id="f-licht-nodig" class="field-input" onchange="toggleInstallatie('licht')">
+            <option value="nee">Niet nodig</option>
+            <option value="ja">Uitbreiding nodig</option>
+          </select>
+          <input type="text" id="f-licht" class="field-input hidden" placeholder="Moving heads…"/>
         </div>
       </div>
     </section>
@@ -515,6 +523,13 @@ function readVolgnummers() {
     .map(i => i.value.trim()).filter(Boolean);
 }
 
+// ── Installatie toggle ────────────────────────
+function toggleInstallatie(type) {
+  const nodig = document.getElementById(`f-${type}-nodig`).value === 'ja';
+  document.getElementById(`f-${type}`).classList.toggle('hidden', !nodig);
+  if (!nodig) document.getElementById(`f-${type}`).value = '';
+}
+
 // ── Afspraak toggle ───────────────────────────
 function toggleAfspraak() {
   const type = document.getElementById('f-afspraak-type').value;
@@ -610,10 +625,12 @@ function clearForm() {
     const el = document.getElementById('f-' + id);
     if (el) el.value = '';
   });
-  ['thema','openingsdans','input-publiek'].forEach(id => {
+  ['thema','openingsdans','input-publiek','geluid-nodig','licht-nodig'].forEach(id => {
     const el = document.getElementById('f-' + id);
     if (el) el.value = 'nee';
   });
+  document.getElementById('f-geluid').classList.add('hidden');
+  document.getElementById('f-licht').classList.add('hidden');
   document.getElementById('f-afspraak-type').value = '';
   document.getElementById('f-volgnummers').value = 'nee';
   document.getElementById('afspraak-email-wrap').classList.add('hidden');
@@ -631,7 +648,8 @@ function fillForm(d) {
   sv('naam',d.naam); sv('datum',d.datum); sv('gsm',d.gsm); sv('locatie',d.locatie);
   sv('thema',d.thema); sv('thema-oms',d.thema_oms);
   sv('gasten',d.gasten); sv('doelpubliek',d.doelpubliek);
-  sv('geluid',d.geluid); sv('licht',d.licht);
+  if (d.geluid) { document.getElementById('f-geluid-nodig').value = 'ja'; toggleInstallatie('geluid'); sv('geluid',d.geluid); }
+  if (d.licht)  { document.getElementById('f-licht-nodig').value  = 'ja'; toggleInstallatie('licht');  sv('licht',d.licht);   }
   sv('startuur',d.startuur); sv('einduur',d.einduur);
   sv('opbouw-uur',d.opbouw_uur); sv('zaal-naam',d.zaal_naam); sv('zaal-telefoon',d.zaal_telefoon);
   sv('afspraak-datum',d.afspraak_datum); sv('afspraak-type',d.afspraak_type||'');
