@@ -15,6 +15,10 @@
     .view { display:none; }
     .view.active { display:block; }
     #view-login.active { display:flex; }
+    .btn-add { display:inline-flex; align-items:center; gap:.375rem; padding:.375rem .875rem; border-radius:.75rem; border:1px dashed #d1d5db; font-size:.8rem; color:#6b7280; cursor:pointer; transition:all .15s; background:white; }
+    .btn-add:hover { border-color:#E8177A; color:#E8177A; background:#fff5f9; }
+    .btn-remove { display:flex; align-items:center; justify-content:center; width:1.75rem; height:1.75rem; border-radius:.5rem; border:none; background:none; color:#d1d5db; cursor:pointer; font-size:1rem; line-height:1; flex-shrink:0; }
+    .btn-remove:hover { color:#ef4444; background:#fef2f2; }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen" style="font-family:system-ui,-apple-system,sans-serif">
@@ -35,14 +39,12 @@
                onkeydown="if(event.key==='Enter')login()"/>
       </div>
       <p id="login-err" class="hidden text-red-500 text-xs text-center"></p>
-      <button onclick="login()"
-              class="w-full py-3 rounded-xl text-white font-bold text-sm transition hover:-translate-y-0.5"
-              style="background:#E8177A">
+      <button onclick="login()" class="w-full py-3 rounded-xl text-white font-bold text-sm" style="background:#E8177A">
         Inloggen
       </button>
     </div>
     <p class="text-xs text-gray-400 text-center mt-5">
-      Token met <code class="bg-gray-100 px-1 rounded">repo</code> scope vereist.
+      Classic token met <code class="bg-gray-100 px-1 rounded">repo</code> scope vereist.
     </p>
   </div>
 </div>
@@ -57,15 +59,12 @@
       <span class="text-gray-400 text-sm ml-3">Backoffice</span>
     </div>
     <div class="flex items-center gap-3">
-      <button onclick="showEdit(null)"
-              class="px-4 py-2 rounded-xl text-white text-sm font-semibold"
-              style="background:#E8177A">
+      <button onclick="showEdit(null)" class="px-4 py-2 rounded-xl text-white text-sm font-semibold" style="background:#E8177A">
         + Nieuwe boeking
       </button>
       <button onclick="logout()" class="text-sm text-gray-400 hover:text-gray-600">Uitloggen</button>
     </div>
   </header>
-
   <main class="max-w-5xl mx-auto px-6 py-8">
     <div class="flex items-end gap-4 mb-6 flex-wrap">
       <div>
@@ -76,21 +75,18 @@
         <label class="field-label">Tot</label>
         <input type="date" id="f-tot" onchange="renderList()" style="width:auto" class="field-input"/>
       </div>
-      <button onclick="clearFilter()"
-              class="px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-500 hover:bg-gray-50">
+      <button onclick="clearFilter()" class="px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-500 hover:bg-gray-50">
         Wis filter
       </button>
       <span id="list-count" class="ml-auto text-sm text-gray-400"></span>
     </div>
-
     <div id="list-loading" class="text-center py-20 text-gray-400 text-sm">Boekingen laden…</div>
     <div id="list-empty" class="hidden text-center py-20 text-gray-400 text-sm">Geen boekingen gevonden.</div>
-
     <div id="list-wrap" class="hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <table class="w-full text-sm">
         <thead>
           <tr class="border-b border-gray-100 text-xs font-semibold text-gray-400 uppercase tracking-wide">
-            <th class="text-left px-5 py-3">Datum</th>
+            <th class="text-left px-5 py-3">Datum feest</th>
             <th class="text-left px-5 py-3">Naam</th>
             <th class="text-left px-5 py-3">Locatie</th>
             <th class="text-left px-5 py-3">Gasten</th>
@@ -116,18 +112,14 @@
     </div>
     <div class="flex items-center gap-3">
       <span id="save-msg" class="text-sm text-gray-400"></span>
-      <button onclick="saveEvent()"
-              class="px-5 py-2 rounded-xl text-white text-sm font-semibold"
-              style="background:#E8177A">
-        Opslaan
-      </button>
+      <button onclick="saveEvent()" class="px-5 py-2 rounded-xl text-white text-sm font-semibold" style="background:#E8177A">Opslaan</button>
       <button onclick="showList()" class="text-sm text-gray-400 hover:text-gray-600">Annuleren</button>
     </div>
   </header>
 
   <main class="max-w-3xl mx-auto px-6 py-8 space-y-6">
 
-    <!-- Basisinformatie -->
+    <!-- ── Basisinformatie ── -->
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Basisinformatie</h2>
       <div class="grid grid-cols-2 gap-4">
@@ -138,6 +130,10 @@
         <div>
           <label class="field-label">Datum feest *</label>
           <input type="date" id="f-datum" class="field-input"/>
+        </div>
+        <div class="col-span-2">
+          <label class="field-label">GSM contactpersoon *</label>
+          <input type="tel" id="f-gsm" class="field-input" placeholder="+32 4XX XX XX XX"/>
         </div>
         <div class="col-span-2">
           <label class="field-label">Locatie feest</label>
@@ -165,7 +161,34 @@
       </div>
     </section>
 
-    <!-- Installatie -->
+    <!-- ── Afspraak ── -->
+    <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <h2 class="font-bold text-gray-800 mb-5">Afspraak draaiboek</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="field-label">Datum afspraak</label>
+          <input type="date" id="f-afspraak-datum" class="field-input"/>
+        </div>
+        <div>
+          <label class="field-label">Type</label>
+          <select id="f-afspraak-type" class="field-input" onchange="toggleAfspraak()">
+            <option value="">— Kies —</option>
+            <option value="online">Online</option>
+            <option value="fysiek">Fysiek</option>
+          </select>
+        </div>
+        <div id="afspraak-email-wrap" class="col-span-2 hidden">
+          <label class="field-label">E-mailadres voor online afspraak</label>
+          <input type="email" id="f-afspraak-email" class="field-input" placeholder="jan@voorbeeld.be"/>
+        </div>
+        <div id="afspraak-adres-wrap" class="col-span-2 hidden">
+          <label class="field-label">Adres fysieke afspraak</label>
+          <input type="text" id="f-afspraak-adres" class="field-input" placeholder="Straat 1, 9000 Gent"/>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Installatie ── -->
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Installatie uitbreiding</h2>
       <div class="grid grid-cols-2 gap-4">
@@ -180,7 +203,7 @@
       </div>
     </section>
 
-    <!-- Tijden & Verloop -->
+    <!-- ── Tijden & Verloop ── -->
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Tijden & Verloop</h2>
       <div class="grid grid-cols-2 gap-4 mb-5">
@@ -195,59 +218,43 @@
       </div>
       <div class="space-y-2">
         <div class="grid gap-3 text-xs font-semibold text-gray-400 uppercase tracking-wide px-1"
-             style="grid-template-columns:90px 90px 1fr">
-          <span>Start</span><span>Einde</span><span>Omschrijving</span>
+             style="grid-template-columns:90px 90px 1fr 28px">
+          <span>Start</span><span>Einde</span><span>Omschrijving</span><span></span>
         </div>
-        <div class="grid gap-3 items-center" style="grid-template-columns:90px 90px 1fr">
-          <input type="time" id="f-v1s" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
-          <input type="time" id="f-v1e" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
-          <input type="text" id="f-v1o" class="field-input" placeholder="Ontvangst, aperitief…"/>
-        </div>
-        <div class="grid gap-3 items-center" style="grid-template-columns:90px 90px 1fr">
-          <input type="time" id="f-v2s" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
-          <input type="time" id="f-v2e" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
-          <input type="text" id="f-v2o" class="field-input" placeholder="Diner…"/>
-        </div>
-        <div class="grid gap-3 items-center" style="grid-template-columns:90px 90px 1fr">
-          <input type="time" id="f-v3s" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
-          <input type="time" id="f-v3e" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
-          <input type="text" id="f-v3o" class="field-input" placeholder="Feest, dans…"/>
-        </div>
-        <div class="grid gap-3 items-center" style="grid-template-columns:90px 90px 1fr">
-          <input type="time" id="f-v4s" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
-          <input type="time" id="f-v4e" class="field-input" style="padding:.5rem .625rem;font-size:.8rem"/>
-          <input type="text" id="f-v4o" class="field-input" placeholder="Afsluiting…"/>
-        </div>
+        <div id="verloop-rows" class="space-y-2"></div>
+        <button type="button" class="btn-add mt-1" onclick="addVerloopRow()">
+          <span style="font-size:1rem;line-height:1">+</span> Rij toevoegen
+        </button>
       </div>
     </section>
 
-    <!-- Genres -->
+    <!-- ── Genres ── -->
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Genres</h2>
       <div id="genres-wrap" class="grid grid-cols-5 gap-x-4 gap-y-2.5 text-sm"></div>
     </section>
 
-    <!-- Muziekwensen -->
+    <!-- ── Muziekwensen ── -->
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Muziekwensen</h2>
       <div class="space-y-4">
         <div>
           <label class="field-label">Gewenst</label>
-          <textarea id="f-gewenst" rows="3" class="field-input"
-                    placeholder="Nummers / artiesten die zeker moeten spelen…"></textarea>
+          <textarea id="f-gewenst" rows="3" class="field-input" placeholder="Nummers / artiesten die zeker moeten spelen…"></textarea>
         </div>
         <div>
           <label class="field-label">Ongewenst</label>
-          <textarea id="f-ongewenst" rows="3" class="field-input"
-                    placeholder="Nummers / artiesten die absoluut niet mogen…"></textarea>
+          <textarea id="f-ongewenst" rows="3" class="field-input" placeholder="Nummers / artiesten die absoluut niet mogen…"></textarea>
         </div>
       </div>
     </section>
 
-    <!-- Specials -->
+    <!-- ── Specials ── -->
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Specials</h2>
-      <div class="space-y-4">
+      <div class="space-y-5">
+
+        <!-- Openingsdans -->
         <div class="grid gap-4" style="grid-template-columns:130px 1fr">
           <div>
             <label class="field-label">Openingsdans</label>
@@ -261,43 +268,45 @@
             <input type="text" id="f-openingsdans-oms" class="field-input" placeholder="Artiest — Nummer"/>
           </div>
         </div>
-        <div class="grid gap-4" style="grid-template-columns:130px 1fr">
-          <div>
-            <label class="field-label">Volgnummer(s)</label>
-            <select id="f-volgnummers" class="field-input">
-              <option value="nee">Nee</option>
-              <option value="ja">Ja</option>
-            </select>
+
+        <!-- Volgnummers -->
+        <div>
+          <div class="grid gap-4 mb-3" style="grid-template-columns:130px 1fr">
+            <div>
+              <label class="field-label">Volgnummer(s)</label>
+              <select id="f-volgnummers" class="field-input" onchange="toggleVolgnummers()">
+                <option value="nee">Nee</option>
+                <option value="ja">Ja</option>
+              </select>
+            </div>
+            <div class="flex items-end">
+              <p class="text-xs text-gray-400 pb-2">Selecteer "Ja" om nummers toe te voegen.</p>
+            </div>
           </div>
-          <div>
-            <label class="field-label">Omschrijving</label>
-            <input type="text" id="f-volgnummers-oms" class="field-input" placeholder="Artiest — Nummer"/>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="field-label">Lijst opstellen</label>
-            <select id="f-lijst" class="field-input">
-              <option value="nee">Nee</option>
-              <option value="ja">Ja</option>
-            </select>
-          </div>
-          <div>
-            <label class="field-label">Input publiek</label>
-            <select id="f-input-publiek" class="field-input">
-              <option value="nee">Nee</option>
-              <option value="ja">Ja</option>
-            </select>
+          <div id="volgnum-wrap" class="hidden space-y-2 pl-1">
+            <div id="volgnum-rows" class="space-y-2"></div>
+            <button type="button" class="btn-add" onclick="addVolgnumRow()">
+              <span style="font-size:1rem;line-height:1">+</span> Nummer toevoegen
+            </button>
           </div>
         </div>
+
+        <!-- Input publiek -->
+        <div style="max-width:130px">
+          <label class="field-label">Input publiek</label>
+          <select id="f-input-publiek" class="field-input">
+            <option value="nee">Nee</option>
+            <option value="ja">Ja</option>
+          </select>
+        </div>
+
       </div>
     </section>
 
-    <!-- Notities -->
+    <!-- ── Notities ── -->
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Notities</h2>
-      <textarea id="f-notities" rows="4" class="field-input"
-                placeholder="Extra opmerkingen, afspraken, bereikbaarheid, betaling…"></textarea>
+      <textarea id="f-notities" rows="4" class="field-input" placeholder="Extra opmerkingen, afspraken, bereikbaarheid, betaling…"></textarea>
     </section>
 
     <div class="flex justify-between items-center pb-10">
@@ -306,15 +315,8 @@
         Verwijderen
       </button>
       <div class="flex gap-3 ml-auto">
-        <button onclick="showList()"
-                class="px-5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">
-          Annuleren
-        </button>
-        <button onclick="saveEvent()"
-                class="px-6 py-2.5 rounded-xl text-white text-sm font-semibold"
-                style="background:#E8177A">
-          Opslaan
-        </button>
+        <button onclick="showList()" class="px-5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">Annuleren</button>
+        <button onclick="saveEvent()" class="px-6 py-2.5 rounded-xl text-white text-sm font-semibold" style="background:#E8177A">Opslaan</button>
       </div>
     </div>
   </main>
@@ -328,16 +330,16 @@ const BRANCH = 'main';
 const DIR    = 'events';
 
 const GENRES = [
-  'Rock','Pop','Ultratop','StuBru','New wave','Slow','Latin','2step','Lounge',
-  'House','Retro','Tech house','Trance','Dubstep','Dance','Foute','Polonaise','Schlager','Meedanser',
-  'R&B','Hip Hop','Oldschool','Reggae','Dance Hall','Funk','Salsa','Samba','Bachata',
-  'Disco','Oldies','Swing','Boogie','Wals','Blues','Jazz',
+  'Rock','Pop','New wave','Slow','Latin','2step','Lounge',
+  'House','Retro House','Tech house','Trance','Dubstep','Dance','Foute','Polonaise','Schlager','Meedanser',
+  'R&B','Hip Hop','Oldschool','Reggae','Dance Hall','Funk','Salsa',
+  'Disco','Oldies','Boogie','Wals','Blues','Jazz',
   '60s','70s','80s','90s','2000','Vandaag',
 ];
 
 // ── State ─────────────────────────────────────
-let token = sessionStorage.getItem('gh_token') || '';
-let events = [];
+let token    = sessionStorage.getItem('gh_token') || '';
+let events   = [];
 let editPath = null;
 let editSha  = null;
 
@@ -372,37 +374,23 @@ function showEdit(path) {
 async function gh(path, opts = {}) {
   const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}${path}`, {
     ...opts,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json',
-      ...(opts.headers || {}),
-    },
+    headers: { Authorization:`Bearer ${token}`, Accept:'application/vnd.github.v3+json', 'Content-Type':'application/json', ...(opts.headers||{}) },
   });
   if (res.status === 401) { logout(); throw new Error('Sessie verlopen.'); }
   return res;
 }
-
 async function ghGet(path) {
   const res = await gh(path);
   if (!res.ok) throw new Error(`${res.status} ${path}`);
   return res.json();
 }
-
 async function ghPut(path, body) {
-  const res = await gh(path, { method: 'PUT', body: JSON.stringify(body) });
-  if (!res.ok) {
-    const e = await res.json().catch(() => ({}));
-    throw new Error(e.message || `${res.status}`);
-  }
+  const res = await gh(path, { method:'PUT', body:JSON.stringify(body) });
+  if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.message||`${res.status}`); }
   return res.json();
 }
-
 async function ghDel(path, sha, msg) {
-  const res = await gh(path, {
-    method: 'DELETE',
-    body: JSON.stringify({ message: msg, sha, branch: BRANCH }),
-  });
+  const res = await gh(path, { method:'DELETE', body:JSON.stringify({ message:msg, sha, branch:BRANCH }) });
   if (!res.ok) throw new Error(`${res.status}`);
 }
 
@@ -415,7 +403,7 @@ async function login() {
   errEl.classList.add('hidden');
   try {
     const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}`, {
-      headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github.v3+json' },
+      headers: { Authorization:`Bearer ${token}`, Accept:'application/vnd.github.v3+json' },
     });
     if (!res.ok) throw new Error();
     sessionStorage.setItem('gh_token', token);
@@ -426,7 +414,6 @@ async function login() {
     errEl.classList.remove('hidden');
   }
 }
-
 function logout() {
   token = '';
   sessionStorage.removeItem('gh_token');
@@ -447,16 +434,67 @@ function parseFm(raw) {
   }
   return obj;
 }
-
 function buildFm(obj) {
   const lines = ['---'];
   for (const [k, v] of Object.entries(obj)) {
     const s = String(v ?? '').replace(/\n/g, '\\n');
     const q = s.includes(':') || s.includes('#') || s.startsWith('"');
-    lines.push(`${k}: ${q ? `"${s.replace(/"/g, '\\"')}"` : s}`);
+    lines.push(`${k}: ${q ? `"${s.replace(/"/g,'\\"')}"` : s}`);
   }
   lines.push('---', '');
   return lines.join('\n');
+}
+
+// ── Dynamic rows: Verloop ─────────────────────
+function addVerloopRow(s='', e='', o='') {
+  const wrap = document.getElementById('verloop-rows');
+  const row = document.createElement('div');
+  row.className = 'verloop-row grid gap-3 items-center';
+  row.style.gridTemplateColumns = '90px 90px 1fr 28px';
+  row.innerHTML = `
+    <input type="time" class="vrs field-input" style="padding:.5rem .625rem;font-size:.8rem" value="${esc(s)}"/>
+    <input type="time" class="vre field-input" style="padding:.5rem .625rem;font-size:.8rem" value="${esc(e)}"/>
+    <input type="text" class="vro field-input" placeholder="Omschrijving…" value="${esc(o)}"/>
+    <button type="button" class="btn-remove" onclick="this.closest('.verloop-row').remove()" title="Verwijderen">✕</button>`;
+  wrap.appendChild(row);
+}
+
+function readVerloop() {
+  return [...document.querySelectorAll('#verloop-rows .verloop-row')].map(row => ({
+    s: row.querySelector('.vrs').value.trim(),
+    e: row.querySelector('.vre').value.trim(),
+    o: row.querySelector('.vro').value.trim(),
+  }));
+}
+
+// ── Dynamic rows: Volgnummers ─────────────────
+function toggleVolgnummers() {
+  const ja = document.getElementById('f-volgnummers').value === 'ja';
+  const wrap = document.getElementById('volgnum-wrap');
+  wrap.classList.toggle('hidden', !ja);
+  if (ja && document.getElementById('volgnum-rows').children.length === 0) addVolgnumRow();
+}
+
+function addVolgnumRow(val='') {
+  const wrap = document.getElementById('volgnum-rows');
+  const row = document.createElement('div');
+  row.className = 'volgnum-row flex gap-2 items-center';
+  row.innerHTML = `
+    <input type="text" class="field-input" placeholder="Artiest — Nummer" value="${esc(val)}"/>
+    <button type="button" class="btn-remove" onclick="this.closest('.volgnum-row').remove()" title="Verwijderen">✕</button>`;
+  wrap.appendChild(row);
+}
+
+function readVolgnummers() {
+  return [...document.querySelectorAll('#volgnum-rows .volgnum-row input')]
+    .map(i => i.value.trim()).filter(Boolean);
+}
+
+// ── Afspraak toggle ───────────────────────────
+function toggleAfspraak() {
+  const type = document.getElementById('f-afspraak-type').value;
+  document.getElementById('afspraak-email-wrap').classList.toggle('hidden', type !== 'online');
+  document.getElementById('afspraak-adres-wrap').classList.toggle('hidden', type !== 'fysiek');
 }
 
 // ── Load events ───────────────────────────────
@@ -467,15 +505,14 @@ async function loadEvents() {
   events = [];
   try {
     let files = [];
-    try { files = await ghGet(`/contents/${DIR}?ref=${BRANCH}`); } catch { /* dir not yet created */ }
+    try { files = await ghGet(`/contents/${DIR}?ref=${BRANCH}`); } catch { /* map nog niet aangemaakt */ }
     const mdFiles = Array.isArray(files) ? files.filter(f => f.name.endsWith('.md')) : [];
     const settled = await Promise.allSettled(mdFiles.map(async f => {
       const file = await ghGet(`/contents/${f.path}?ref=${BRANCH}`);
       const raw  = decodeURIComponent(escape(atob(file.content.replace(/\s/g, ''))));
       return { sha: file.sha, path: f.path, data: parseFm(raw) };
     }));
-    events = settled
-      .filter(r => r.status === 'fulfilled').map(r => r.value)
+    events = settled.filter(r => r.status === 'fulfilled').map(r => r.value)
       .sort((a, b) => (a.data.datum || '').localeCompare(b.data.datum || ''));
   } catch (err) { console.error(err); }
   document.getElementById('list-loading').classList.add('hidden');
@@ -489,13 +526,9 @@ function renderList() {
   let rows = events;
   if (van) rows = rows.filter(e => (e.data.datum || '') >= van);
   if (tot) rows = rows.filter(e => (e.data.datum || '') <= tot);
-
-  document.getElementById('list-count').textContent =
-    rows.length === 1 ? '1 boeking' : `${rows.length} boekingen`;
-
+  document.getElementById('list-count').textContent = rows.length === 1 ? '1 boeking' : `${rows.length} boekingen`;
   const tbody = document.getElementById('list-tbody');
   tbody.innerHTML = '';
-
   if (!rows.length) {
     document.getElementById('list-empty').classList.remove('hidden');
     document.getElementById('list-wrap').classList.add('hidden');
@@ -503,7 +536,6 @@ function renderList() {
   }
   document.getElementById('list-empty').classList.add('hidden');
   document.getElementById('list-wrap').classList.remove('hidden');
-
   for (const ev of rows) {
     const d = ev.data;
     const dateStr = d.datum
@@ -526,14 +558,13 @@ function renderList() {
     tbody.appendChild(tr);
   }
 }
-
 function clearFilter() {
   document.getElementById('f-van').value = '';
   document.getElementById('f-tot').value = '';
   renderList();
 }
 
-// ── Genre checkboxes ──────────────────────────
+// ── Genres ────────────────────────────────────
 function buildGenres() {
   const wrap = document.getElementById('genres-wrap');
   if (wrap.children.length) return;
@@ -545,37 +576,73 @@ function buildGenres() {
   ).join('');
 }
 
-// ── Form helpers ──────────────────────────────
+// ── Form: clear ───────────────────────────────
 function clearForm() {
-  ['naam','datum','locatie','thema-oms','gasten','doelpubliek','geluid','licht',
-   'startuur','einduur','v1s','v1e','v1o','v2s','v2e','v2o','v3s','v3e','v3o','v4s','v4e','v4o',
-   'gewenst','ongewenst','openingsdans-oms','volgnummers-oms','notities'].forEach(id => {
+  ['naam','datum','gsm','locatie','thema-oms','gasten','doelpubliek',
+   'geluid','licht','startuur','einduur',
+   'afspraak-datum','afspraak-email','afspraak-adres',
+   'gewenst','ongewenst','openingsdans-oms','notities'].forEach(id => {
     const el = document.getElementById('f-' + id);
     if (el) el.value = '';
   });
-  ['thema','openingsdans','volgnummers','lijst','input-publiek'].forEach(id => {
+  ['thema','openingsdans','input-publiek'].forEach(id => {
     const el = document.getElementById('f-' + id);
     if (el) el.value = 'nee';
   });
+  document.getElementById('f-afspraak-type').value = '';
+  document.getElementById('f-volgnummers').value = 'nee';
+  document.getElementById('afspraak-email-wrap').classList.add('hidden');
+  document.getElementById('afspraak-adres-wrap').classList.add('hidden');
+  document.getElementById('volgnum-wrap').classList.add('hidden');
+  document.getElementById('verloop-rows').innerHTML = '';
+  document.getElementById('volgnum-rows').innerHTML = '';
+  addVerloopRow(); // start met 1 lege rij
   document.querySelectorAll('#genres-wrap input[type=checkbox]').forEach(cb => cb.checked = false);
 }
 
+// ── Form: fill ────────────────────────────────
 function fillForm(d) {
-  const s = (id, val) => { const el = document.getElementById('f-'+id); if (el && val != null) el.value = val; };
-  s('naam',d.naam); s('datum',d.datum); s('locatie',d.locatie);
-  s('thema',d.thema); s('thema-oms',d.thema_oms);
-  s('gasten',d.gasten); s('doelpubliek',d.doelpubliek);
-  s('geluid',d.geluid); s('licht',d.licht);
-  s('startuur',d.startuur); s('einduur',d.einduur);
-  s('v1s',d.v1s); s('v1e',d.v1e); s('v1o',d.v1o);
-  s('v2s',d.v2s); s('v2e',d.v2e); s('v2o',d.v2o);
-  s('v3s',d.v3s); s('v3e',d.v3e); s('v3o',d.v3o);
-  s('v4s',d.v4s); s('v4e',d.v4e); s('v4o',d.v4o);
-  s('gewenst',d.gewenst); s('ongewenst',d.ongewenst);
-  s('openingsdans',d.openingsdans); s('openingsdans-oms',d.openingsdans_oms);
-  s('volgnummers',d.volgnummers); s('volgnummers-oms',d.volgnummers_oms);
-  s('lijst',d.lijst); s('input-publiek',d.input_publiek);
-  s('notities',d.notities);
+  const sv = (id, val) => { const el = document.getElementById('f-'+id); if (el && val != null) el.value = val; };
+  sv('naam',d.naam); sv('datum',d.datum); sv('gsm',d.gsm); sv('locatie',d.locatie);
+  sv('thema',d.thema); sv('thema-oms',d.thema_oms);
+  sv('gasten',d.gasten); sv('doelpubliek',d.doelpubliek);
+  sv('geluid',d.geluid); sv('licht',d.licht);
+  sv('startuur',d.startuur); sv('einduur',d.einduur);
+  sv('afspraak-datum',d.afspraak_datum); sv('afspraak-type',d.afspraak_type||'');
+  sv('afspraak-email',d.afspraak_email); sv('afspraak-adres',d.afspraak_adres);
+  toggleAfspraak();
+  sv('gewenst',d.gewenst); sv('ongewenst',d.ongewenst);
+  sv('openingsdans',d.openingsdans); sv('openingsdans-oms',d.openingsdans_oms);
+  sv('input-publiek',d.input_publiek);
+  sv('notities',d.notities);
+
+  // Verloop — dynamische rijen laden
+  document.getElementById('verloop-rows').innerHTML = '';
+  const count = d.verloop_count ? parseInt(d.verloop_count) : 4;
+  let loaded = 0;
+  for (let i = 1; i <= count; i++) {
+    const s = d[`v${i}s`]||'', e = d[`v${i}e`]||'', o = d[`v${i}o`]||'';
+    if (s || e || o) { addVerloopRow(s, e, o); loaded++; }
+  }
+  if (loaded === 0) addVerloopRow();
+
+  // Volgnummers
+  sv('volgnummers', d.volgnummers);
+  document.getElementById('volgnum-rows').innerHTML = '';
+  if (d.volgnummers === 'ja') {
+    document.getElementById('volgnum-wrap').classList.remove('hidden');
+    const vcount = d.volgnum_count ? parseInt(d.volgnum_count) : 0;
+    if (vcount > 0) {
+      for (let i = 1; i <= vcount; i++) addVolgnumRow(d[`volgnum_${i}`]||'');
+    } else if (d.volgnummers_oms) {
+      // backwards compat: oud enkelveld
+      addVolgnumRow(d.volgnummers_oms);
+    } else {
+      addVolgnumRow();
+    }
+  }
+
+  // Genres
   if (d.genres) {
     const active = d.genres.split(',').map(x => x.trim());
     document.querySelectorAll('#genres-wrap input[type=checkbox]').forEach(cb => {
@@ -584,52 +651,52 @@ function fillForm(d) {
   }
 }
 
+// ── Form: read ────────────────────────────────
 function readForm() {
   const g = id => (document.getElementById('f-'+id)?.value || '').trim();
   const genres = [...document.querySelectorAll('#genres-wrap input[type=checkbox]:checked')]
     .map(cb => cb.value).join(',');
-  return {
-    naam: g('naam'), datum: g('datum'), locatie: g('locatie'),
+  const verloop = readVerloop();
+  const volgnums = readVolgnummers();
+  const obj = {
+    naam: g('naam'), datum: g('datum'), gsm: g('gsm'), locatie: g('locatie'),
     thema: g('thema'), thema_oms: g('thema-oms'),
     gasten: g('gasten'), doelpubliek: g('doelpubliek'),
+    afspraak_datum: g('afspraak-datum'), afspraak_type: g('afspraak-type'),
+    afspraak_email: g('afspraak-email'), afspraak_adres: g('afspraak-adres'),
     geluid: g('geluid'), licht: g('licht'),
     startuur: g('startuur'), einduur: g('einduur'),
-    v1s: g('v1s'), v1e: g('v1e'), v1o: g('v1o'),
-    v2s: g('v2s'), v2e: g('v2e'), v2o: g('v2o'),
-    v3s: g('v3s'), v3e: g('v3e'), v3o: g('v3o'),
-    v4s: g('v4s'), v4e: g('v4e'), v4o: g('v4o'),
+    verloop_count: verloop.length,
     genres,
     gewenst: g('gewenst'), ongewenst: g('ongewenst'),
     openingsdans: g('openingsdans'), openingsdans_oms: g('openingsdans-oms'),
-    volgnummers: g('volgnummers'), volgnummers_oms: g('volgnummers-oms'),
-    lijst: g('lijst'), input_publiek: g('input-publiek'),
+    volgnummers: g('volgnummers'), volgnum_count: volgnums.length,
+    input_publiek: g('input-publiek'),
     notities: g('notities'),
   };
+  verloop.forEach((v, i) => { obj[`v${i+1}s`]=v.s; obj[`v${i+1}e`]=v.e; obj[`v${i+1}o`]=v.o; });
+  volgnums.forEach((v, i) => { obj[`volgnum_${i+1}`] = v; });
+  return obj;
 }
 
 // ── Save ──────────────────────────────────────
 async function saveEvent() {
   const data = readForm();
   if (!data.naam || !data.datum) { alert('Naam en datum zijn verplicht.'); return; }
-
   const msgEl = document.getElementById('save-msg');
   msgEl.textContent = 'Opslaan…';
-
   try {
     const content = buildFm(data);
     const encoded = btoa(unescape(encodeURIComponent(content)));
     const slug = data.naam.toLowerCase()
-      .normalize('NFD').replace(/[̀-ͯ]/g, '')
-      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      .normalize('NFD').replace(/[̀-ͯ]/g,'')
+      .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
     const newPath = `${DIR}/${data.datum}-${slug}.md`;
     const body = {
       message: editPath ? `Boeking bijgewerkt: ${data.naam}` : `Nieuwe boeking: ${data.naam}`,
-      content: encoded,
-      branch: BRANCH,
+      content: encoded, branch: BRANCH,
     };
-
     if (editPath && editPath !== newPath && editSha) {
-      // Naam of datum gewijzigd → oud bestand verwijderen, nieuw aanmaken
       await ghDel(`/contents/${editPath}`, editSha, `Boeking hernoemd: ${editPath}`);
       await ghPut(`/contents/${newPath}`, body);
     } else if (editPath) {
@@ -638,7 +705,6 @@ async function saveEvent() {
     } else {
       await ghPut(`/contents/${newPath}`, body);
     }
-
     msgEl.textContent = '✓ Opgeslagen';
     setTimeout(showList, 800);
   } catch (err) {
@@ -655,9 +721,7 @@ async function deleteEvent() {
   try {
     await ghDel(`/contents/${editPath}`, editSha, `Boeking verwijderd: ${naam}`);
     showList();
-  } catch (err) {
-    alert('Fout bij verwijderen: ' + err.message);
-  }
+  } catch (err) { alert('Fout bij verwijderen: ' + err.message); }
 }
 
 // ── Util ──────────────────────────────────────
