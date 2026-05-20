@@ -1,1 +1,1 @@
-Stuur uw aanvraag en ik reageer asap.
+Vertel kort wat u zoekt, ik neem snel contact met u op.
