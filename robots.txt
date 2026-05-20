@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /events/
+
+Sitemap: https://djandyveltjen.be/sitemap.xml
