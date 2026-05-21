@@ -240,7 +240,7 @@
           <label class="field-label">Geluid</label>
           <select id="f-geluid-nodig" class="field-input" onchange="toggleInstallatie('geluid'); updatePrijs()">
             <option value="aanwezig">Aanwezig op locatie</option>
-            <option value="eigen">Eigen installatie</option>
+            <option value="eigen">DJ voorziet geluidsinstallatie</option>
             <option value="uitbreiding">Uitbreiding nodig</option>
           </select>
           <!-- Discobooth sub-veld: enkel zichtbaar als geluid = aanwezig in zaal -->
@@ -259,7 +259,7 @@
           <select id="f-licht-nodig" class="field-input" onchange="toggleInstallatie('licht'); updatePrijs()">
             <option value="niet">Niet nodig</option>
             <option value="aanwezig">Aanwezig op locatie</option>
-            <option value="eigen">Eigen installatie</option>
+            <option value="eigen">DJ voorziet lichtinstallatie</option>
             <option value="uitbreiding">Uitbreiding nodig</option>
           </select>
           <input type="text" id="f-licht" class="field-input hidden" placeholder="Omschrijf uitbreiding (bv. moving heads)…"/>
@@ -872,10 +872,10 @@ function printEvent() {
     ${(d.geluid_nodig || d.licht_nodig) ? `<div class="pr-section">
       <div class="pr-section-title">Installatie</div>
       <div class="pr-grid">
-        ${d.geluid_nodig ? row('Geluid', {'aanwezig':'Aanwezig op locatie','eigen':'Eigen installatie (Pioneer CDJ + DJM)','uitbreiding':'Uitbreiding nodig'}[d.geluid_nodig]
+        ${d.geluid_nodig ? row('Geluid', {'aanwezig':'Aanwezig op locatie','eigen':'DJ voorziet geluidsinstallatie','uitbreiding':'Uitbreiding nodig'}[d.geluid_nodig]
             + (d.geluid_nodig === 'aanwezig' && d.discobooth === 'niet' ? ' — eigen discobooth meenemen' : '')
             + (d.geluid ? ` (${d.geluid})` : '')) : ''}
-        ${d.licht_nodig  ? row('Licht',  {'niet':'Niet nodig','aanwezig':'Aanwezig op locatie','eigen':'Eigen installatie','uitbreiding':'Uitbreiding nodig'}[d.licht_nodig]
+        ${d.licht_nodig  ? row('Licht',  {'niet':'Niet nodig','aanwezig':'Aanwezig op locatie','eigen':'DJ voorziet lichtinstallatie','uitbreiding':'Uitbreiding nodig'}[d.licht_nodig]
             + (d.licht ? ` (${d.licht})` : '')) : ''}
       </div>
     </div>` : ''}
