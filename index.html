@@ -481,7 +481,7 @@
     <div class="text-center max-w-2xl mx-auto mb-16 reveal">
       <p class="text-[#E8177A] font-semibold text-xs uppercase tracking-[.2em] mb-3">Mijn aanpak</p>
       <h2 class="text-4xl md:text-5xl font-black leading-tight mb-4">
-        Eenvoudig en met<br/>uiterste zorg
+        Professioneel en met<br/>uiterste zorg
       </h2>
       <div id="werking-sub" class="text-gray-500 text-lg">
         Van eerste contact tot het laatste nummer, alles tot in de puntjes verzorgd.
@@ -592,6 +592,34 @@
 
         </div>
       </div>
+
+      <!-- Slideshow -->
+      <div class="mt-10 relative rounded-2xl overflow-hidden select-none" id="allin-slider">
+        <div id="allin-slides" class="flex transition-transform duration-600 ease-in-out"
+             style="will-change:transform">
+          <img src="https://picsum.photos/seed/dj01/1200/500" class="w-full flex-shrink-0 object-cover" style="aspect-ratio:12/5" alt="Sfeerbeeld 1" loading="lazy"/>
+          <img src="https://picsum.photos/seed/dj02/1200/500" class="w-full flex-shrink-0 object-cover" style="aspect-ratio:12/5" alt="Sfeerbeeld 2" loading="lazy"/>
+          <img src="https://picsum.photos/seed/dj03/1200/500" class="w-full flex-shrink-0 object-cover" style="aspect-ratio:12/5" alt="Sfeerbeeld 3" loading="lazy"/>
+          <img src="https://picsum.photos/seed/dj04/1200/500" class="w-full flex-shrink-0 object-cover" style="aspect-ratio:12/5" alt="Sfeerbeeld 4" loading="lazy"/>
+          <img src="https://picsum.photos/seed/dj05/1200/500" class="w-full flex-shrink-0 object-cover" style="aspect-ratio:12/5" alt="Sfeerbeeld 5" loading="lazy"/>
+        </div>
+
+        <!-- Pijlen -->
+        <button onclick="allinSlide(-1)" aria-label="Vorige"
+                class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center
+                       bg-black/40 text-white hover:bg-[#E8177A] transition-colors backdrop-blur-sm">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <button onclick="allinSlide(1)" aria-label="Volgende"
+                class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center
+                       bg-black/40 text-white hover:bg-[#E8177A] transition-colors backdrop-blur-sm">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <!-- Dots -->
+        <div id="allin-dots" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2"></div>
+      </div>
+
     </div>
 
   </div>
@@ -1148,6 +1176,52 @@
     btn.disabled = false;
   });
 
+})();
+
+// ── ALL IN slideshow ────────────────────────
+(function() {
+  const track  = document.getElementById('allin-slides');
+  const dotsEl = document.getElementById('allin-dots');
+  if (!track) return;
+  const total  = track.children.length;
+  let cur = 0, timer;
+
+  // Dots aanmaken
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('button');
+    d.className = 'w-2 h-2 rounded-full transition-all duration-300';
+    d.style.background = i === 0 ? '#E8177A' : 'rgba(255,255,255,.4)';
+    d.setAttribute('aria-label', `Slide ${i + 1}`);
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  }
+
+  function goTo(n) {
+    cur = (n + total) % total;
+    track.style.transform = `translateX(-${cur * 100}%)`;
+    [...dotsEl.children].forEach((d, i) => {
+      d.style.background = i === cur ? '#E8177A' : 'rgba(255,255,255,.4)';
+      d.style.width = i === cur ? '1.5rem' : '.5rem';
+    });
+  }
+
+  function startTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => goTo(cur + 1), 4500);
+  }
+
+  window.allinSlide = function(dir) { goTo(cur + dir); startTimer(); };
+
+  // Touch/swipe support
+  let tx = 0;
+  track.parentElement.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  track.parentElement.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) { allinSlide(dx < 0 ? 1 : -1); }
+  }, { passive: true });
+
+  goTo(0);
+  startTimer();
 })();
 
 // ── Scroll-to-top knop ──────────────────────
