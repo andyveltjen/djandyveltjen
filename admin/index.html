@@ -239,16 +239,25 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="space-y-2">
           <label class="field-label">Geluid</label>
-          <select id="f-geluid-nodig" class="field-input" onchange="toggleInstallatie('geluid')">
+          <select id="f-geluid-nodig" class="field-input" onchange="toggleInstallatie('geluid'); updatePrijs()">
             <option value="aanwezig">Aanwezig in zaal</option>
             <option value="eigen">Eigen installatie</option>
             <option value="uitbreiding">Uitbreiding nodig</option>
           </select>
+          <!-- Discobooth sub-veld: enkel zichtbaar als geluid = aanwezig in zaal -->
+          <div id="discobooth-wrap" class="hidden space-y-1">
+            <label class="field-label">Discobooth in zaal?</label>
+            <select id="f-discobooth" class="field-input" onchange="updatePrijs()">
+              <option value="aanwezig">Aanwezig (min. CDJ 3000 + DJM A9)</option>
+              <option value="niet">Niet aanwezig → eigen discobooth meenemen</option>
+            </select>
+            <p class="text-xs text-gray-400">DJ neemt eigen discobooth mee als er geen CDJ 3000 + DJM A9 aanwezig is.</p>
+          </div>
           <input type="text" id="f-geluid" class="field-input hidden" placeholder="Omschrijf uitbreiding (bv. extra subwoofer)…"/>
         </div>
         <div class="space-y-2">
           <label class="field-label">Licht</label>
-          <select id="f-licht-nodig" class="field-input" onchange="toggleInstallatie('licht')">
+          <select id="f-licht-nodig" class="field-input" onchange="toggleInstallatie('licht'); updatePrijs()">
             <option value="niet">Niet nodig</option>
             <option value="aanwezig">Aanwezig in zaal</option>
             <option value="eigen">Eigen installatie</option>
@@ -374,6 +383,28 @@
           </select>
         </div>
 
+      </div>
+    </section>
+
+    <!-- ── Prijsberekening ── -->
+    <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <h2 class="font-bold text-gray-800 mb-1">Prijsberekening</h2>
+      <p class="text-xs text-gray-400 mb-5">Alle bedragen exclusief BTW — reageert automatisch op de installatie-instellingen.</p>
+      <div id="prijs-lijnen" class="space-y-2 mb-4"></div>
+      <!-- Meerprijs uitbreiding: enkel zichtbaar bij uitbreiding -->
+      <div id="meerprijs-wrap" class="hidden mb-4">
+        <label class="field-label">Meerprijs uitbreiding</label>
+        <div class="flex items-center gap-3">
+          <span class="text-gray-500 text-sm">€</span>
+          <input type="number" id="f-meerprijs" class="field-input" style="max-width:140px" min="0" step="10"
+                 placeholder="PM (nog te bepalen)" oninput="updatePrijs()"/>
+          <span class="text-xs text-gray-400">Laat leeg als prijs nog niet bepaald is (= PM)</span>
+        </div>
+      </div>
+      <div class="border-t border-gray-200 pt-4 flex items-baseline gap-3">
+        <span class="text-sm font-semibold text-gray-600">Totaal excl. BTW</span>
+        <span id="prijs-totaal" class="text-2xl font-bold" style="color:#E8177A">€ —</span>
+        <span id="prijs-pm" class="text-sm text-gray-400 hidden">+ PM uitbreiding</span>
       </div>
     </section>
 
@@ -572,9 +603,82 @@ function readVolgnummers() {
 // ── Installatie toggle ────────────────────────
 function toggleInstallatie(type) {
   const val = document.getElementById(`f-${type}-nodig`).value;
-  const show = val === 'uitbreiding';
-  document.getElementById(`f-${type}`).classList.toggle('hidden', !show);
-  if (!show) document.getElementById(`f-${type}`).value = '';
+  const showTxt = val === 'uitbreiding';
+  document.getElementById(`f-${type}`).classList.toggle('hidden', !showTxt);
+  if (!showTxt) document.getElementById(`f-${type}`).value = '';
+  // discobooth sub-veld: enkel bij geluid = aanwezig
+  if (type === 'geluid') {
+    const showBooth = val === 'aanwezig';
+    document.getElementById('discobooth-wrap').classList.toggle('hidden', !showBooth);
+    if (!showBooth) document.getElementById('f-discobooth').value = 'aanwezig';
+  }
+}
+
+// ── Prijsberekening ──────────────────────────
+function updatePrijs() {
+  const geluid    = document.getElementById('f-geluid-nodig').value;
+  const licht     = document.getElementById('f-licht-nodig').value;
+  const discobooth = document.getElementById('f-discobooth').value;
+  const meerprijs  = parseFloat(document.getElementById('f-meerprijs').value) || 0;
+
+  const isUitbreiding = (geluid === 'uitbreiding' || licht === 'uitbreiding');
+
+  // Eigen discobooth nodig?
+  const discoNodig = (geluid === 'eigen') ||
+                     (geluid === 'aanwezig' && discobooth === 'niet');
+
+  // Volledige installatie (geluid + licht beide door DJ)?
+  const fullInstall = (geluid === 'eigen') && (licht === 'eigen');
+
+  // Bouw regeloverzicht op
+  const items = [];
+  let total = 0;
+  let hasPM = false;
+
+  const addItem = (label, amount, note = '') => items.push({ label, amount, note });
+
+  // Basis DJ
+  addItem('DJ Andy Veltjen', 350);
+  total += 350;
+
+  if (isUitbreiding) {
+    addItem('Installatie (uitbreiding)', 250, 'Eigen setup + uitbreiding');
+    total += 250;
+    if (meerprijs > 0) {
+      addItem('Meerprijs uitbreiding', meerprijs, 'Specifieke apparatuur/extra');
+      total += meerprijs;
+    } else {
+      addItem('Meerprijs uitbreiding', null, 'Nog te bepalen (PM)');
+      hasPM = true;
+    }
+  } else {
+    if (discoNodig) {
+      addItem('Eigen discobooth (Pioneer CDJ + DJM)', 50, geluid === 'aanwezig' ? 'Niet aanwezig in zaal' : '');
+      total += 50;
+    }
+    if (fullInstall) {
+      addItem('Installatie licht & geluid', 250, 'Volledig door DJ voorzien');
+      total += 250;
+    }
+  }
+
+  // Toon/verberg meerprijs-invoerveld
+  document.getElementById('meerprijs-wrap').classList.toggle('hidden', !isUitbreiding);
+
+  // Render regels
+  const wrap = document.getElementById('prijs-lijnen');
+  wrap.innerHTML = items.map(it => `
+    <div class="flex items-start justify-between py-1.5 border-b border-gray-50 text-sm">
+      <div>
+        <span class="font-medium text-gray-700">${it.label}</span>
+        ${it.note ? `<span class="ml-2 text-xs text-gray-400">${it.note}</span>` : ''}
+      </div>
+      <span class="font-semibold text-gray-800 whitespace-nowrap ml-4">${it.amount !== null ? '€ ' + it.amount.toFixed(0) : '<span class="text-gray-400 italic">PM</span>'}</span>
+    </div>`).join('');
+
+  // Totaal
+  document.getElementById('prijs-totaal').textContent = `€ ${total.toFixed(0)}`;
+  document.getElementById('prijs-pm').classList.toggle('hidden', !hasPM);
 }
 
 // ── Afspraak toggle ───────────────────────────
@@ -760,11 +864,14 @@ function printEvent() {
       </div>
     </div>` : ''}
 
-    ${(d['geluid-nodig'] || d['licht-nodig']) ? `<div class="pr-section">
+    ${(d.geluid_nodig || d.licht_nodig) ? `<div class="pr-section">
       <div class="pr-section-title">Installatie</div>
       <div class="pr-grid">
-        ${d['geluid-nodig'] ? row('Geluid', {'aanwezig':'Aanwezig in zaal','eigen':'Eigen installatie (Pioneer CDJ + DJM)','uitbreiding':'Uitbreiding nodig'}[d['geluid-nodig']] + (d.geluid ? ` — ${d.geluid}` : '')) : ''}
-        ${d['licht-nodig']  ? row('Licht',  {'niet':'Niet nodig','aanwezig':'Aanwezig in zaal','eigen':'Eigen installatie','uitbreiding':'Uitbreiding nodig'}[d['licht-nodig']]   + (d.licht  ? ` — ${d.licht}`  : '')) : ''}
+        ${d.geluid_nodig ? row('Geluid', {'aanwezig':'Aanwezig in zaal','eigen':'Eigen installatie (Pioneer CDJ + DJM)','uitbreiding':'Uitbreiding nodig'}[d.geluid_nodig]
+            + (d.geluid_nodig === 'aanwezig' && d.discobooth === 'niet' ? ' — eigen discobooth meenemen' : '')
+            + (d.geluid ? ` (${d.geluid})` : '')) : ''}
+        ${d.licht_nodig  ? row('Licht',  {'niet':'Niet nodig','aanwezig':'Aanwezig in zaal','eigen':'Eigen installatie','uitbreiding':'Uitbreiding nodig'}[d.licht_nodig]
+            + (d.licht ? ` (${d.licht})` : '')) : ''}
       </div>
     </div>` : ''}
 
@@ -806,6 +913,34 @@ function printEvent() {
         <ul style="margin:.2rem 0 0 1rem;font-size:.8rem">${volgnums.map(v => `<li>${esc(v)}</li>`).join('')}</ul></div>` : row('Volgnummer(s)', 'Nee')}
     </div>
 
+    <div class="pr-section">
+      <div class="pr-section-title">Prijsberekening (excl. BTW)</div>
+      ${(() => {
+        const geluid     = d.geluid_nodig || 'eigen';
+        const licht      = d.licht_nodig  || 'niet';
+        const discobooth = d.discobooth   || 'aanwezig';
+        const meerprijs  = parseFloat(d.meerprijs) || 0;
+        const isUitbreiding = (geluid === 'uitbreiding' || licht === 'uitbreiding');
+        const discoNodig = (geluid === 'eigen') || (geluid === 'aanwezig' && discobooth === 'niet');
+        const fullInstall = (geluid === 'eigen') && (licht === 'eigen');
+        let items = [['DJ Andy Veltjen', 350]];
+        let total = 350;
+        if (isUitbreiding) {
+          items.push(['Installatie (uitbreiding)', 250]);
+          total += 250;
+          items.push(['Meerprijs uitbreiding', meerprijs > 0 ? meerprijs : 'PM']);
+          if (meerprijs > 0) total += meerprijs;
+        } else {
+          if (discoNodig) { items.push(['Eigen discobooth (Pioneer CDJ + DJM)', 50]); total += 50; }
+          if (fullInstall) { items.push(['Installatie licht & geluid', 250]); total += 250; }
+        }
+        const rows = items.map(([l, a]) => `<tr><td style="padding:.2rem .5rem .2rem 0;font-size:.78rem">${l}</td><td style="padding:.2rem 0 .2rem .5rem;text-align:right;font-size:.78rem;font-weight:600">${typeof a === 'number' ? '€ '+a : '<em>'+a+'</em>'}</td></tr>`).join('');
+        return `<table style="width:100%;border-collapse:collapse;margin-bottom:.3rem">${rows}
+          <tr style="border-top:1px solid #ddd"><td style="padding:.4rem .5rem .2rem 0;font-weight:700;font-size:.85rem">Totaal excl. BTW</td><td style="padding:.4rem 0 .2rem .5rem;text-align:right;font-weight:700;font-size:.85rem">€ ${total}</td></tr>
+        </table>`;
+      })()}
+    </div>
+
     ${d.notities ? `<div class="pr-section">
       <div class="pr-section-title">Notities</div>
       <div class="pr-val-block">${esc(d.notities)}</div>
@@ -843,10 +978,13 @@ function clearForm() {
   });
   document.getElementById('f-geluid-nodig').value = 'eigen';
   document.getElementById('f-licht-nodig').value  = 'niet';
+  document.getElementById('f-discobooth').value   = 'aanwezig';
+  document.getElementById('f-meerprijs').value    = '';
   toggleInstallatie('geluid');
   toggleInstallatie('licht');
   document.getElementById('f-geluid').classList.add('hidden');
   document.getElementById('f-licht').classList.add('hidden');
+  updatePrijs();
   document.getElementById('f-afspraak-type').value = '';
   document.getElementById('f-volgnummers').value = 'nee';
   document.getElementById('afspraak-email-wrap').classList.add('hidden');
@@ -864,10 +1002,13 @@ function fillForm(d) {
   sv('naam',d.naam); sv('datum',d.datum); sv('gsm',d.gsm); sv('locatie',d.locatie);
   sv('thema',d.thema); sv('thema-oms',d.thema_oms);
   sv('gasten',d.gasten); sv('doelpubliek',d.doelpubliek);
-  if (d['geluid-nodig']) { sv('geluid-nodig', d['geluid-nodig']); toggleInstallatie('geluid'); }
-  if (d['licht-nodig'])  { sv('licht-nodig',  d['licht-nodig']);  toggleInstallatie('licht');  }
-  if (d.geluid) sv('geluid', d.geluid);
-  if (d.licht)  sv('licht',  d.licht);
+  // installatie (geluid_nodig / licht_nodig opgeslagen met underscore)
+  if (d.geluid_nodig) { sv('geluid-nodig', d.geluid_nodig); } toggleInstallatie('geluid');
+  if (d.licht_nodig)  { sv('licht-nodig',  d.licht_nodig);  } toggleInstallatie('licht');
+  if (d.discobooth) sv('discobooth', d.discobooth);
+  if (d.geluid)     sv('geluid', d.geluid);
+  if (d.licht)      sv('licht',  d.licht);
+  if (d.meerprijs)  sv('meerprijs', d.meerprijs);
   sv('startuur',d.startuur); sv('einduur',d.einduur);
   sv('opbouw-uur',d.opbouw_uur); sv('zaal-naam',d.zaal_naam); sv('zaal-telefoon',d.zaal_telefoon);
   sv('afspraak-datum',d.afspraak_datum); sv('afspraak-type',d.afspraak_type||'');
@@ -911,6 +1052,7 @@ function fillForm(d) {
       cb.checked = active.includes(cb.value);
     });
   }
+  updatePrijs();
 }
 
 // ── Form: read ────────────────────────────────
@@ -926,7 +1068,9 @@ function readForm() {
     gasten: g('gasten'), doelpubliek: g('doelpubliek'),
     afspraak_datum: g('afspraak-datum'), afspraak_type: g('afspraak-type'),
     afspraak_email: g('afspraak-email'), afspraak_adres: g('afspraak-adres'),
-    geluid: g('geluid'), licht: g('licht'),
+    geluid_nodig: g('geluid-nodig'), licht_nodig: g('licht-nodig'),
+    discobooth: g('discobooth'), geluid: g('geluid'), licht: g('licht'),
+    meerprijs: g('meerprijs'),
     startuur: g('startuur'), einduur: g('einduur'),
     opbouw_uur: g('opbouw-uur'), zaal_naam: g('zaal-naam'), zaal_telefoon: g('zaal-telefoon'),
     verloop_count: verloop.length,
