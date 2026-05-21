@@ -240,7 +240,7 @@
         <div class="space-y-2">
           <label class="field-label">Geluid</label>
           <select id="f-geluid-nodig" class="field-input" onchange="toggleInstallatie('geluid'); updatePrijs()">
-            <option value="aanwezig">Aanwezig in zaal</option>
+            <option value="aanwezig">Aanwezig op locatie</option>
             <option value="eigen">Eigen installatie</option>
             <option value="uitbreiding">Uitbreiding nodig</option>
           </select>
@@ -259,7 +259,7 @@
           <label class="field-label">Licht</label>
           <select id="f-licht-nodig" class="field-input" onchange="toggleInstallatie('licht'); updatePrijs()">
             <option value="niet">Niet nodig</option>
-            <option value="aanwezig">Aanwezig in zaal</option>
+            <option value="aanwezig">Aanwezig op locatie</option>
             <option value="eigen">Eigen installatie</option>
             <option value="uitbreiding">Uitbreiding nodig</option>
           </select>
@@ -624,8 +624,7 @@ function updatePrijs() {
   const isUitbreiding = (geluid === 'uitbreiding' || licht === 'uitbreiding');
 
   // Eigen discobooth nodig?
-  const discoNodig = (geluid === 'eigen') ||
-                     (geluid === 'aanwezig' && discobooth === 'niet');
+  const discoNodig = (geluid === 'aanwezig' && discobooth === 'niet');
 
   // Volledige installatie (geluid + licht beide door DJ)?
   const fullInstall = (geluid === 'eigen') && (licht === 'eigen');
@@ -867,10 +866,10 @@ function printEvent() {
     ${(d.geluid_nodig || d.licht_nodig) ? `<div class="pr-section">
       <div class="pr-section-title">Installatie</div>
       <div class="pr-grid">
-        ${d.geluid_nodig ? row('Geluid', {'aanwezig':'Aanwezig in zaal','eigen':'Eigen installatie (Pioneer CDJ + DJM)','uitbreiding':'Uitbreiding nodig'}[d.geluid_nodig]
+        ${d.geluid_nodig ? row('Geluid', {'aanwezig':'Aanwezig op locatie','eigen':'Eigen installatie (Pioneer CDJ + DJM)','uitbreiding':'Uitbreiding nodig'}[d.geluid_nodig]
             + (d.geluid_nodig === 'aanwezig' && d.discobooth === 'niet' ? ' — eigen discobooth meenemen' : '')
             + (d.geluid ? ` (${d.geluid})` : '')) : ''}
-        ${d.licht_nodig  ? row('Licht',  {'niet':'Niet nodig','aanwezig':'Aanwezig in zaal','eigen':'Eigen installatie','uitbreiding':'Uitbreiding nodig'}[d.licht_nodig]
+        ${d.licht_nodig  ? row('Licht',  {'niet':'Niet nodig','aanwezig':'Aanwezig op locatie','eigen':'Eigen installatie','uitbreiding':'Uitbreiding nodig'}[d.licht_nodig]
             + (d.licht ? ` (${d.licht})` : '')) : ''}
       </div>
     </div>` : ''}
@@ -921,7 +920,7 @@ function printEvent() {
         const discobooth = d.discobooth   || 'aanwezig';
         const meerprijs  = parseFloat(d.meerprijs) || 0;
         const isUitbreiding = (geluid === 'uitbreiding' || licht === 'uitbreiding');
-        const discoNodig = (geluid === 'eigen') || (geluid === 'aanwezig' && discobooth === 'niet');
+        const discoNodig = (geluid === 'aanwezig' && discobooth === 'niet');
         const fullInstall = (geluid === 'eigen') && (licht === 'eigen');
         let items = [['DJ Andy Veltjen', 350]];
         let total = 350;
