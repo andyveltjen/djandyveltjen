@@ -18,6 +18,12 @@
     .btn-add { display:inline-flex; align-items:center; gap:.375rem; padding:.375rem .875rem; border-radius:.75rem; border:1px dashed #d1d5db; font-size:.8rem; color:#6b7280; cursor:pointer; transition:all .15s; background:white; }
     .btn-add:hover { border-color:#E8177A; color:#E8177A; background:#fff5f9; }
     .btn-remove { display:flex; align-items:center; justify-content:center; width:1.75rem; height:1.75rem; border-radius:.5rem; border:none; background:none; color:#d1d5db; cursor:pointer; font-size:1rem; line-height:1; flex-shrink:0; }
+    @media (max-width:640px) {
+      .mob-hide  { display:none !important; }
+      .mob-stack { grid-template-columns: 1fr !important; }
+      .verloop-row { grid-template-columns: 1fr 1fr 28px !important; }
+      .verloop-row .vro { grid-column: 1 / 3; }
+    }
     @page { size: A4 portrait; margin: 0; }
     @media print {
       body > *:not(#print-view) { display:none !important; }
@@ -73,19 +79,19 @@
      LIJST
 ══════════════════════════════════════════ -->
 <div id="view-list" class="view">
-  <header class="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
+  <header class="bg-white border-b border-gray-100 px-4 sm:px-6 py-4 flex items-center justify-between">
     <div>
-      <span class="font-black text-xl" style="color:#E8177A">DJ Andy Veltjen</span>
-      <span class="text-gray-400 text-sm ml-3">Backoffice</span>
+      <span class="font-black text-lg sm:text-xl" style="color:#E8177A">DJ Andy Veltjen</span>
+      <span class="text-gray-400 text-sm ml-2 mob-hide">Backoffice</span>
     </div>
-    <div class="flex items-center gap-3">
-      <button onclick="showEdit(null)" class="px-4 py-2 rounded-xl text-white text-sm font-semibold" style="background:#E8177A">
-        + Nieuwe boeking
+    <div class="flex items-center gap-2 sm:gap-3">
+      <button onclick="showEdit(null)" class="px-3 sm:px-4 py-2 rounded-xl text-white text-sm font-semibold" style="background:#E8177A">
+        + Nieuw
       </button>
       <button onclick="logout()" class="text-sm text-gray-400 hover:text-gray-600">Uitloggen</button>
     </div>
   </header>
-  <main class="max-w-5xl mx-auto px-6 py-8">
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
     <div class="flex items-end gap-4 mb-6 flex-wrap">
       <div>
         <label class="field-label">Van</label>
@@ -107,19 +113,21 @@
     <div id="list-loading" class="text-center py-20 text-gray-400 text-sm">Boekingen laden…</div>
     <div id="list-empty" class="hidden text-center py-20 text-gray-400 text-sm">Geen boekingen gevonden.</div>
     <div id="list-wrap" class="hidden bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="overflow-x-auto">
       <table class="w-full text-sm">
         <thead>
           <tr class="border-b border-gray-100 text-xs font-semibold text-gray-400 uppercase tracking-wide">
-            <th class="text-left px-5 py-3">Datum feest</th>
-            <th class="text-left px-5 py-3">Naam</th>
-            <th class="text-left px-5 py-3">Locatie</th>
-            <th class="text-left px-5 py-3">Gasten</th>
-            <th class="text-left px-5 py-3">Uren</th>
-            <th class="px-5 py-3"></th>
+            <th class="text-left px-4 py-3 whitespace-nowrap">Datum</th>
+            <th class="text-left px-4 py-3">Naam</th>
+            <th class="text-left px-4 py-3 mob-hide">Locatie</th>
+            <th class="text-left px-4 py-3 mob-hide">Gasten</th>
+            <th class="text-left px-4 py-3 mob-hide">Uren</th>
+            <th class="px-4 py-3"></th>
           </tr>
         </thead>
         <tbody id="list-tbody"></tbody>
       </table>
+      </div>
     </div>
   </main>
 </div>
@@ -128,27 +136,27 @@
      BEWERKEN
 ══════════════════════════════════════════ -->
 <div id="view-edit" class="view">
-  <header class="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-    <div class="flex items-center gap-3">
-      <button onclick="showList()" class="text-gray-400 hover:text-gray-600 text-sm">← Terug</button>
-      <span class="font-black text-xl" style="color:#E8177A">DJ Andy Veltjen</span>
-      <span id="edit-subtitle" class="text-gray-400 text-sm">Nieuwe boeking</span>
+  <header class="bg-white border-b border-gray-100 px-4 sm:px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+    <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+      <button onclick="showList()" class="text-gray-400 hover:text-gray-600 text-sm flex-shrink-0">← Terug</button>
+      <span class="font-black text-lg sm:text-xl flex-shrink-0" style="color:#E8177A">DJ Andy</span>
+      <span id="edit-subtitle" class="text-gray-400 text-sm truncate mob-hide">Nieuwe boeking</span>
     </div>
-    <div class="flex items-center gap-3">
-      <span id="save-msg" class="text-sm text-gray-400"></span>
-      <button onclick="addToCalendar()" class="px-4 py-2 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">📅 Agenda</button>
-      <button onclick="printEvent()" class="px-4 py-2 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">🖨 Afdrukken</button>
-      <button onclick="saveEvent()" class="px-5 py-2 rounded-xl text-white text-sm font-semibold" style="background:#E8177A">Opslaan</button>
-      <button onclick="showList()" class="text-sm text-gray-400 hover:text-gray-600">Annuleren</button>
+    <div class="flex items-center gap-2 flex-shrink-0">
+      <span id="save-msg" class="text-sm text-gray-400 mob-hide"></span>
+      <button onclick="addToCalendar()" class="mob-hide px-3 py-2 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">📅</button>
+      <button onclick="printEvent()" class="mob-hide px-3 py-2 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">🖨</button>
+      <button onclick="saveEvent()" class="px-4 py-2 rounded-xl text-white text-sm font-semibold" style="background:#E8177A">Opslaan</button>
+      <button onclick="showList()" class="mob-hide text-sm text-gray-400 hover:text-gray-600">Annuleren</button>
     </div>
   </header>
 
-  <main class="max-w-3xl mx-auto px-6 py-8 space-y-6">
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
 
     <!-- ── Basisinformatie deel 1 ── -->
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Basisinformatie</h2>
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="field-label">Naam *</label>
           <input type="text" id="f-naam" class="field-input" placeholder="Bruiloft Janssen"/>
@@ -157,7 +165,7 @@
           <label class="field-label">Datum feest *</label>
           <input type="date" id="f-datum" class="field-input"/>
         </div>
-        <div class="col-span-2">
+        <div class="sm:col-span-2">
           <label class="field-label">GSM contactpersoon *</label>
           <input type="tel" id="f-gsm" class="field-input" placeholder="+32 4XX XX XX XX"/>
         </div>
@@ -167,7 +175,7 @@
     <!-- ── Afspraak ── -->
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Afspraak draaiboek</h2>
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="field-label">Datum afspraak</label>
           <input type="date" id="f-afspraak-datum" class="field-input"/>
@@ -180,11 +188,11 @@
             <option value="fysiek">Fysiek</option>
           </select>
         </div>
-        <div id="afspraak-email-wrap" class="col-span-2 hidden">
+        <div id="afspraak-email-wrap" class="sm:col-span-2 hidden">
           <label class="field-label">E-mailadres voor online afspraak</label>
           <input type="email" id="f-afspraak-email" class="field-input" placeholder="jan@voorbeeld.be"/>
         </div>
-        <div id="afspraak-adres-wrap" class="col-span-2 hidden">
+        <div id="afspraak-adres-wrap" class="sm:col-span-2 hidden">
           <label class="field-label">Adres fysieke afspraak</label>
           <input type="text" id="f-afspraak-adres" class="field-input" placeholder="Straat 1, 9000 Gent"/>
         </div>
@@ -194,8 +202,8 @@
     <!-- ── Basisinformatie deel 2 ── -->
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Details evenement</h2>
-      <div class="grid grid-cols-2 gap-4">
-        <div class="col-span-2">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="sm:col-span-2">
           <label class="field-label">Locatie feest</label>
           <input type="text" id="f-locatie" class="field-input" placeholder="Feestzaal De Kroon, Gent"/>
         </div>
@@ -224,7 +232,7 @@
     <!-- ── Installatie ── -->
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Installatie uitbreiding</h2>
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="space-y-2">
           <label class="field-label">Geluid</label>
           <select id="f-geluid-nodig" class="field-input" onchange="toggleInstallatie('geluid')">
@@ -247,7 +255,7 @@
     <!-- ── Tijden & Verloop ── -->
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Tijden & Verloop</h2>
-      <div class="grid grid-cols-2 gap-4 mb-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
         <div>
           <label class="field-label">Startuur</label>
           <input type="time" id="f-startuur" class="field-input"/>
@@ -269,7 +277,7 @@
       </div>
       <div class="border-t border-gray-100 mt-6 pt-5 space-y-4">
         <h3 class="text-sm font-semibold text-gray-600">Opbouw installatie</h3>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="field-label">Uur opbouw</label>
             <input type="time" id="f-opbouw-uur" class="field-input"/>
@@ -290,7 +298,7 @@
     <!-- ── Genres ── -->
     <section class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
       <h2 class="font-bold text-gray-800 mb-5">Genres</h2>
-      <div id="genres-wrap" class="grid grid-cols-5 gap-x-4 gap-y-2.5 text-sm"></div>
+      <div id="genres-wrap" class="grid grid-cols-3 sm:grid-cols-5 gap-x-4 gap-y-2.5 text-sm"></div>
     </section>
 
     <!-- ── Muziekwensen ── -->
@@ -314,7 +322,7 @@
       <div class="space-y-5">
 
         <!-- Openingsdans -->
-        <div class="grid gap-4" style="grid-template-columns:130px 1fr">
+        <div class="grid gap-4 mob-stack" style="grid-template-columns:130px 1fr">
           <div>
             <label class="field-label">Openingsdans</label>
             <select id="f-openingsdans" class="field-input">
@@ -618,13 +626,13 @@ function renderList() {
     const tr = document.createElement('tr');
     tr.className = 'border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors';
     tr.innerHTML = `
-      <td class="px-5 py-3.5 text-gray-600 whitespace-nowrap">${dateStr}</td>
-      <td class="px-5 py-3.5 font-medium">${esc(d.naam || '—')}</td>
-      <td class="px-5 py-3.5 text-gray-500">${esc(d.locatie || '—')}</td>
-      <td class="px-5 py-3.5 text-gray-500">${esc(d.gasten || '—')}</td>
-      <td class="px-5 py-3.5 text-gray-500 whitespace-nowrap">${esc(uren)}</td>
-      <td class="px-5 py-3.5 text-right">
-        <button class="text-xs px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-white"
+      <td class="px-4 py-3.5 text-gray-600 whitespace-nowrap">${dateStr}</td>
+      <td class="px-4 py-3.5 font-medium">${esc(d.naam || '—')}</td>
+      <td class="px-4 py-3.5 text-gray-500 mob-hide">${esc(d.locatie || '—')}</td>
+      <td class="px-4 py-3.5 text-gray-500 mob-hide">${esc(d.gasten || '—')}</td>
+      <td class="px-4 py-3.5 text-gray-500 whitespace-nowrap mob-hide">${esc(uren)}</td>
+      <td class="px-4 py-3.5 text-right">
+        <button class="text-xs px-3 py-1.5 rounded-lg border border-gray-200 text-gray-500 hover:bg-white whitespace-nowrap"
                 onclick="event.stopPropagation();showEdit('${ev.path}')">Bewerken</button>
       </td>`;
     tr.onclick = () => showEdit(ev.path);
