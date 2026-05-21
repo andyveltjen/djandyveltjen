@@ -11,8 +11,12 @@ afspraak_datum: 2026-09-18
 afspraak_type: online
 afspraak_email: Charonne@mediahuis.be
 afspraak_adres: 
+geluid_nodig: eigen
+licht_nodig: niet
+discobooth: aanwezig
 geluid: 
 licht: 
+meerprijs: 
 startuur: 
 einduur: 
 opbouw_uur: 
