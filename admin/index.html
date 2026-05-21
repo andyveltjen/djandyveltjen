@@ -623,49 +623,42 @@ function toggleInstallatie(type) {
 
 // ── Prijsberekening ──────────────────────────
 function updatePrijs() {
-  const geluid    = document.getElementById('f-geluid-nodig').value;
-  const licht     = document.getElementById('f-licht-nodig').value;
+  const geluid     = document.getElementById('f-geluid-nodig').value;
+  const licht      = document.getElementById('f-licht-nodig').value;
   const discobooth = document.getElementById('f-discobooth').value;
   const meerprijs  = parseFloat(document.getElementById('f-meerprijs').value) || 0;
 
   const isUitbreiding = (geluid === 'uitbreiding' || licht === 'uitbreiding');
-
-  // Eigen discobooth nodig?
-  const discoNodig = (geluid === 'aanwezig' && discobooth === 'niet');
-
-  // Volledige installatie (geluid + licht beide door DJ)?
-  const fullInstall = (geluid === 'eigen') && (licht === 'eigen');
-
-  // Bouw regeloverzicht op
   const items = [];
   let total = 0;
-  let hasPM = false;
+  let hasMeerprijs = false;
 
-  const addItem = (label, amount, note = '') => items.push({ label, amount, note });
+  const add = (label, amount, note = '') => { items.push({ label, amount, note }); total += amount; };
 
-  // Basis DJ
-  addItem('DJ Andy Veltjen', 350);
-  total += 350;
+  // Basis DJ services
+  add('DJ services', 350);
 
-  if (isUitbreiding) {
-    addItem('Installatie (uitbreiding)', 250, 'Eigen setup + uitbreiding');
-    total += 250;
-    if (meerprijs > 0) {
-      addItem('Meerprijs uitbreiding', meerprijs, 'Specifieke apparatuur/extra');
-      total += meerprijs;
-    } else {
-      addItem('Meerprijs uitbreiding', null, 'Nog te bepalen (PM)');
-      hasPM = true;
-    }
-  } else {
-    if (discoNodig) {
-      addItem('Eigen discobooth (Pioneer CDJ + DJM)', 50, geluid === 'aanwezig' ? 'Niet aanwezig in zaal' : '');
-      total += 50;
-    }
-    if (fullInstall) {
-      addItem('Installatie licht & geluid', 250, 'Volledig door DJ voorzien');
-      total += 250;
-    }
+  // Geluid
+  if (geluid === 'aanwezig' && discobooth === 'niet') {
+    add('Eigen discobooth (Pioneer CDJ + DJM)', 50, 'Niet aanwezig op locatie');
+  } else if (geluid === 'eigen') {
+    add('Geluid installatie', 125, 'Incl. discobooth');
+  } else if (geluid === 'uitbreiding') {
+    add('Geluid installatie', 125, 'Incl. discobooth');
+    hasMeerprijs = true;
+  }
+
+  // Licht
+  if (licht === 'eigen') {
+    add('Licht installatie', 75);
+  } else if (licht === 'uitbreiding') {
+    add('Licht installatie', 75);
+    hasMeerprijs = true;
+  }
+
+  // Bekende meerprijs uitbreiding
+  if (hasMeerprijs && meerprijs > 0) {
+    add('Meerprijs uitbreiding', meerprijs, 'Specifieke apparatuur');
   }
 
   // Toon/verberg meerprijs-invoerveld
@@ -679,12 +672,18 @@ function updatePrijs() {
         <span class="font-medium text-gray-700">${it.label}</span>
         ${it.note ? `<span class="ml-2 text-xs text-gray-400">${it.note}</span>` : ''}
       </div>
-      <span class="font-semibold text-gray-800 whitespace-nowrap ml-4">${it.amount !== null ? '€ ' + it.amount.toFixed(0) : '<span class="text-gray-400 italic">PM</span>'}</span>
+      <span class="font-semibold text-gray-800 whitespace-nowrap ml-4">€ ${it.amount.toFixed(0)}</span>
     </div>`).join('');
 
-  // Totaal
+  // Totaal + PM-melding bij uitbreiding
   document.getElementById('prijs-totaal').textContent = `€ ${total.toFixed(0)}`;
-  document.getElementById('prijs-pm').classList.toggle('hidden', !hasPM);
+  const pmEl = document.getElementById('prijs-pm');
+  if (hasMeerprijs && meerprijs === 0) {
+    pmEl.textContent = '+ meerprijs uitbreiding (PM)';
+    pmEl.classList.remove('hidden');
+  } else {
+    pmEl.classList.add('hidden');
+  }
 }
 
 // ── Afspraak toggle ───────────────────────────
@@ -922,27 +921,35 @@ function printEvent() {
     <div class="pr-section">
       <div class="pr-section-title">Prijsberekening (excl. BTW)</div>
       ${(() => {
-        const geluid     = d.geluid_nodig || 'eigen';
+        const geluid     = d.geluid_nodig || 'aanwezig';
         const licht      = d.licht_nodig  || 'niet';
         const discobooth = d.discobooth   || 'aanwezig';
         const meerprijs  = parseFloat(d.meerprijs) || 0;
-        const isUitbreiding = (geluid === 'uitbreiding' || licht === 'uitbreiding');
-        const discoNodig = (geluid === 'aanwezig' && discobooth === 'niet');
-        const fullInstall = (geluid === 'eigen') && (licht === 'eigen');
-        let items = [['DJ Andy Veltjen', 350]];
+        let items = [['DJ services', 350, '']];
         let total = 350;
-        if (isUitbreiding) {
-          items.push(['Installatie (uitbreiding)', 250]);
-          total += 250;
-          items.push(['Meerprijs uitbreiding', meerprijs > 0 ? meerprijs : 'PM']);
-          if (meerprijs > 0) total += meerprijs;
-        } else {
-          if (discoNodig) { items.push(['Eigen discobooth (Pioneer CDJ + DJM)', 50]); total += 50; }
-          if (fullInstall) { items.push(['Installatie licht & geluid', 250]); total += 250; }
+        let hasMeerprijs = false;
+        if (geluid === 'aanwezig' && discobooth === 'niet') {
+          items.push(['Eigen discobooth (Pioneer CDJ + DJM)', 50, 'Niet aanwezig op locatie']); total += 50;
+        } else if (geluid === 'eigen') {
+          items.push(['Geluid installatie', 125, 'Incl. discobooth']); total += 125;
+        } else if (geluid === 'uitbreiding') {
+          items.push(['Geluid installatie', 125, 'Incl. discobooth']); total += 125; hasMeerprijs = true;
         }
-        const rows = items.map(([l, a]) => `<tr><td style="padding:.2rem .5rem .2rem 0;font-size:.78rem">${l}</td><td style="padding:.2rem 0 .2rem .5rem;text-align:right;font-size:.78rem;font-weight:600">${typeof a === 'number' ? '€ '+a : '<em>'+a+'</em>'}</td></tr>`).join('');
-        return `<table style="width:100%;border-collapse:collapse;margin-bottom:.3rem">${rows}
-          <tr style="border-top:1px solid #ddd"><td style="padding:.4rem .5rem .2rem 0;font-weight:700;font-size:.85rem">Totaal excl. BTW</td><td style="padding:.4rem 0 .2rem .5rem;text-align:right;font-weight:700;font-size:.85rem">€ ${total}</td></tr>
+        if (licht === 'eigen') {
+          items.push(['Licht installatie', 75, '']); total += 75;
+        } else if (licht === 'uitbreiding') {
+          items.push(['Licht installatie', 75, '']); total += 75; hasMeerprijs = true;
+        }
+        if (hasMeerprijs && meerprijs > 0) {
+          items.push(['Meerprijs uitbreiding', meerprijs, 'Specifieke apparatuur']); total += meerprijs;
+        }
+        const rows = items.map(([l, a, n]) =>
+          `<tr><td style="padding:.2rem .5rem .2rem 0;font-size:.78rem">${l}${n ? `<span style="font-size:.7rem;color:#9ca3af;margin-left:.4rem">${n}</span>` : ''}</td><td style="padding:.2rem 0 .2rem .5rem;text-align:right;font-size:.78rem;font-weight:600">€ ${a}</td></tr>`
+        ).join('');
+        const pmNote = hasMeerprijs && meerprijs === 0
+          ? `<tr><td colspan="2" style="padding:.2rem .5rem .1rem 0;font-size:.7rem;color:#9ca3af;font-style:italic">+ meerprijs uitbreiding (PM — nog te bepalen)</td></tr>` : '';
+        return `<table style="width:100%;border-collapse:collapse;margin-bottom:.3rem">${rows}${pmNote}
+          <tr style="border-top:1px solid #ddd"><td style="padding:.4rem .5rem .2rem 0;font-weight:700;font-size:.85rem">Totaal excl. BTW</td><td style="padding:.4rem 0 .2rem .5rem;text-align:right;font-weight:700;font-size:.85rem">€ ${total}${hasMeerprijs && meerprijs === 0 ? ' + PM' : ''}</td></tr>
         </table>`;
       })()}
     </div>
