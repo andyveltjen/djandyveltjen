@@ -400,10 +400,13 @@
           <span class="text-xs text-gray-400">Laat leeg als prijs nog niet bepaald is (= PM)</span>
         </div>
       </div>
-      <div class="border-t border-gray-200 pt-4 flex items-baseline gap-3">
-        <span class="text-sm font-semibold text-gray-600">Totaal excl. BTW</span>
-        <span id="prijs-totaal" class="text-2xl font-bold" style="color:#E8177A">€ —</span>
-        <span id="prijs-pm" class="text-sm text-gray-400 hidden">+ PM uitbreiding</span>
+      <div class="border-t border-gray-200 pt-4">
+        <div class="flex items-baseline gap-3">
+          <span class="text-sm font-semibold text-gray-600">Totaal excl. BTW</span>
+          <span id="prijs-totaal" class="text-2xl font-bold" style="color:#E8177A">€ —</span>
+          <span id="prijs-pm" class="text-sm text-gray-400 hidden">+ PM uitbreiding</span>
+        </div>
+        <div class="text-xs text-gray-400 mt-1">Incl. 21% BTW: <span id="prijs-incl-btw" class="font-medium">€ —</span><span id="prijs-pm-btw" class="hidden"> + PM</span></div>
       </div>
     </section>
 
@@ -684,6 +687,10 @@ function updatePrijs() {
   } else {
     pmEl.classList.add('hidden');
   }
+  // Incl. BTW (21%)
+  const inclBtw = Math.round(total * 1.21);
+  document.getElementById('prijs-incl-btw').textContent = `€ ${inclBtw}`;
+  document.getElementById('prijs-pm-btw').classList.toggle('hidden', !(hasMeerprijs && meerprijs === 0));
 }
 
 // ── Afspraak toggle ───────────────────────────
@@ -949,7 +956,8 @@ function printEvent() {
         const pmNote = hasMeerprijs && meerprijs === 0
           ? `<tr><td colspan="2" style="padding:.2rem .5rem .1rem 0;font-size:.7rem;color:#9ca3af;font-style:italic">+ meerprijs uitbreiding (PM — nog te bepalen)</td></tr>` : '';
         return `<table style="width:100%;border-collapse:collapse;margin-bottom:.3rem">${rows}${pmNote}
-          <tr style="border-top:1px solid #ddd"><td style="padding:.4rem .5rem .2rem 0;font-weight:700;font-size:.85rem">Totaal excl. BTW</td><td style="padding:.4rem 0 .2rem .5rem;text-align:right;font-weight:700;font-size:.85rem">€ ${total}${hasMeerprijs && meerprijs === 0 ? ' + PM' : ''}</td></tr>
+          <tr style="border-top:1px solid #ddd"><td style="padding:.4rem .5rem .1rem 0;font-weight:700;font-size:.85rem">Totaal excl. BTW</td><td style="padding:.4rem 0 .1rem .5rem;text-align:right;font-weight:700;font-size:.85rem">€ ${total}${hasMeerprijs && meerprijs === 0 ? ' + PM' : ''}</td></tr>
+          <tr><td style="padding:.1rem .5rem .2rem 0;font-size:.7rem;color:#9ca3af">Incl. 21% BTW</td><td style="padding:.1rem 0 .2rem .5rem;text-align:right;font-size:.7rem;color:#9ca3af">€ ${Math.round(total * 1.21)}${hasMeerprijs && meerprijs === 0 ? ' + PM' : ''}</td></tr>
         </table>`;
       })()}
     </div>
