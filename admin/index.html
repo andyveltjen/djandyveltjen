@@ -500,8 +500,9 @@ async function ghPut(path, body) {
   return res.json();
 }
 // Haal de huidige SHA op van een bestand (geeft null als het nog niet bestaat)
+// Cache uitgeschakeld via timestamp om verouderde SHA te vermijden
 async function ghGetSha(path) {
-  const res = await gh(`/contents/${path}?ref=${BRANCH}`);
+  const res = await gh(`/contents/${path}?ref=${BRANCH}&_=${Date.now()}`, { cache: 'no-store' });
   if (!res.ok) return null;
   const j = await res.json();
   return j.sha || null;
