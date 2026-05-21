@@ -499,6 +499,13 @@ async function ghPut(path, body) {
   if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.message||`${res.status}`); }
   return res.json();
 }
+// Haal de huidige SHA op van een bestand (geeft null als het nog niet bestaat)
+async function ghGetSha(path) {
+  const res = await gh(`/contents/${path}?ref=${BRANCH}`);
+  if (!res.ok) return null;
+  const j = await res.json();
+  return j.sha || null;
+}
 async function ghDel(path, sha, msg) {
   const res = await gh(path, { method:'DELETE', body:JSON.stringify({ message:msg, sha, branch:BRANCH }) });
   if (!res.ok) throw new Error(`${res.status}`);
@@ -1102,11 +1109,15 @@ async function saveEvent() {
       message: editPath ? `Boeking bijgewerkt: ${data.naam}` : `Nieuwe boeking: ${data.naam}`,
       content: encoded, branch: BRANCH,
     };
-    if (editPath && editPath !== newPath && editSha) {
-      await ghDel(`/contents/${editPath}`, editSha, `Boeking hernoemd: ${editPath}`);
+    if (editPath && editPath !== newPath) {
+      // Bestandsnaam veranderd: verwijder oud, maak nieuw aan
+      const oldSha = await ghGetSha(editPath);
+      if (oldSha) await ghDel(`/contents/${editPath}`, oldSha, `Boeking hernoemd: ${editPath}`);
       await ghPut(`/contents/${newPath}`, body);
     } else if (editPath) {
-      if (editSha) body.sha = editSha;
+      // Zelfde bestand bijwerken: haal actuele SHA op om conflicten te vermijden
+      const currentSha = await ghGetSha(editPath);
+      if (currentSha) body.sha = currentSha;
       await ghPut(`/contents/${editPath}`, body);
     } else {
       await ghPut(`/contents/${newPath}`, body);
