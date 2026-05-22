@@ -2,7 +2,7 @@
 Vrijblijvende kennismaking
 
 ## stap1-tekst
-We plannen een vrijblijvend online of telefonish gesprek in. We leren elkaar kennen, bespreken je wensen en bekijken samen of er een goede match is. Zonder verplichtingen.
+We plannen een vrijblijvend online of telefonisch gesprek in. We leren elkaar kennen, bespreken je wensen en bekijken samen of er een goede match is. Zonder verplichtingen.
 
 ## stap2-titel
 Muziek & draaiboek
