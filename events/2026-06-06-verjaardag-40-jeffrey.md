@@ -24,7 +24,7 @@ zaal_naam: Familie aanwezig
 zaal_telefoon: 
 verloop_count: 3
 genres: 60s,70s,80s,90s
-gewenst: Begin rustig starten voor ouder volk, \n* DiscoDasco\n* Sfeer Carnaval\n* Nederlandstalig - Kreuners, Jan Smit, ...\n* Alles kan op maat van publiek (Alle Genres)\n* 90s wiggle / wiggle\n* Kölsh\n* Shawn Mendez seniorita\n* Keep pushin'\n*
+gewenst: Begin rustig starten voor ouder volk, \n* DiscoDasco\n* Sfeer Carnaval\n* Nederlandstalig - Kreuners, Jan Smit, ...\n* Alles kan op maat van publiek (Alle Genres)\n* 90s wiggle / wiggle\n* Kölsh\n* Shawn Mendez seniorita\n* Keep pushin' on\n* Jeffrey dit is je verjaardag !!!
 ongewenst: Eddy Wally--
 openingsdans: nee
 openingsdans_oms: 
