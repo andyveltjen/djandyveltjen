@@ -1246,23 +1246,23 @@ async function deleteEvent() {
   if (!editPath) return;
   const naam = document.getElementById('f-naam').value || editPath;
   if (!confirm(`"${naam}" definitief verwijderen?`)) return;
+
+  const pathToDelete = editPath;
+
+  // Onmiddellijk uit UI verwijderen (optimistisch)
+  events = events.filter(e => e.path !== pathToDelete);
+  show('view-list');
+  renderList();
+
+  // Delete op achtergrond uitvoeren
   try {
-    // Haal altijd verse SHA op van GitHub (niet gecached)
-    const sha = await ghGetSha(editPath);
-    console.log('[delete] path:', editPath, '| sha:', sha);
-    if (!sha) throw new Error('Bestand niet gevonden op GitHub — vernieuw de pagina en probeer opnieuw.');
-    await ghDel(`/contents/${editPath}`, sha, `Boeking verwijderd: ${naam}`);
-    console.log('[delete] GitHub DELETE geslaagd');
-    // Verifieer dat het bestand echt weg is
-    const check = await ghGetSha(editPath);
-    if (check !== null) throw new Error('Bestand staat nog op GitHub na verwijderen — probeer opnieuw.');
-    // Bevestigd weg: lokale array bijwerken
-    events = events.filter(e => e.path !== editPath);
-    show('view-list');
-    renderList();
+    const sha = await ghGetSha(pathToDelete);
+    if (!sha) return; // al weg op GitHub
+    await ghDel(`/contents/${pathToDelete}`, sha, `Boeking verwijderd: ${naam}`);
   } catch (err) {
-    console.error('[delete] fout:', err);
-    alert('Fout bij verwijderen: ' + err.message);
+    // Mislukt: event terug in lijst zetten en fout tonen
+    alert('Verwijderen mislukt: ' + err.message + '\n\nDe boeking werd hersteld.');
+    loadEvents();
   }
 }
 
