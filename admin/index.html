@@ -166,7 +166,10 @@
         </div>
         <div>
           <label class="field-label">Datum feest *</label>
-          <input type="date" id="f-datum" class="field-input"/>
+          <input type="date" id="f-datum" class="field-input" onchange="checkMaandlimiet()"/>
+          <div id="maandlimiet-warn" class="hidden mt-1.5 flex items-start gap-1.5 text-xs font-medium rounded-lg px-3 py-2" style="background:#FFF7ED;color:#C2410C">
+            <span>⚠️</span><span id="maandlimiet-tekst"></span>
+          </div>
         </div>
         <div class="sm:col-span-2">
           <label class="field-label">GSM contactpersoon *</label>
@@ -723,6 +726,18 @@ async function loadEvents() {
 }
 
 // ── Render list ───────────────────────────────
+const MAX_PER_MAAND = 2;
+
+// Tel boekingen per maand over ALLE events (niet enkel gefilterd)
+function telPerMaand() {
+  const teller = {};
+  for (const ev of events) {
+    const m = (ev.data.datum || '').slice(0, 7); // 'YYYY-MM'
+    if (m) teller[m] = (teller[m] || 0) + 1;
+  }
+  return teller;
+}
+
 function renderList() {
   const van   = document.getElementById('f-van').value;
   const tot   = document.getElementById('f-tot').value;
@@ -741,8 +756,45 @@ function renderList() {
   }
   document.getElementById('list-empty').classList.add('hidden');
   document.getElementById('list-wrap').classList.remove('hidden');
+
+  const teller = telPerMaand();
+  let huidigeMaand = null;
+
   for (const ev of rows) {
     const d = ev.data;
+    const maandKey = (d.datum || '').slice(0, 7); // 'YYYY-MM'
+
+    // Maandheader invoegen bij nieuwe maand
+    if (maandKey && maandKey !== huidigeMaand) {
+      huidigeMaand = maandKey;
+      const count = teller[maandKey] || 0;
+      const maandLabel = maandKey
+        ? new Date(maandKey + '-15').toLocaleDateString('nl-BE', { month:'long', year:'numeric' })
+        : '—';
+
+      let badge, badgeStyle;
+      if (count >= MAX_PER_MAAND) {
+        badge = `${count}/${MAX_PER_MAAND} vol`;
+        badgeStyle = 'background:#FEE2E2;color:#DC2626;';
+      } else if (count === MAX_PER_MAAND - 1) {
+        badge = `${count}/${MAX_PER_MAAND}`;
+        badgeStyle = 'background:#FEF9C3;color:#CA8A04;';
+      } else {
+        badge = `${count}/${MAX_PER_MAAND}`;
+        badgeStyle = 'background:#DCFCE7;color:#16A34A;';
+      }
+
+      const th = document.createElement('tr');
+      th.innerHTML = `<td colspan="6" style="padding:.5rem 1rem .3rem;background:#F9FAFB;border-top:1px solid #E5E7EB">
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#6B7280">${maandLabel}</span>
+          <span style="font-size:.65rem;font-weight:700;padding:.1rem .5rem;border-radius:999px;${badgeStyle}">${badge}</span>
+          ${count > MAX_PER_MAAND ? `<span style="font-size:.65rem;color:#9CA3AF;font-style:italic">${count - MAX_PER_MAAND}× uitzondering</span>` : ''}
+        </div>
+      </td>`;
+      tbody.appendChild(th);
+    }
+
     const dateStr = d.datum
       ? new Date(d.datum + 'T12:00:00').toLocaleDateString('nl-BE', { day:'2-digit', month:'2-digit', year:'numeric' })
       : '—';
@@ -761,6 +813,28 @@ function renderList() {
       </td>`;
     tr.onclick = () => showEdit(ev.path);
     tbody.appendChild(tr);
+  }
+}
+
+// Waarschuwing in formulier als gekozen maand al vol zit
+function checkMaandlimiet() {
+  const datum = document.getElementById('f-datum').value;
+  const warnEl = document.getElementById('maandlimiet-warn');
+  const tekstEl = document.getElementById('maandlimiet-tekst');
+  if (!datum) { warnEl.classList.add('hidden'); return; }
+
+  const maandKey = datum.slice(0, 7);
+  const teller = telPerMaand();
+  // Bij bewerken: de huidige boeking zelf niet meetellen
+  const eigenMaand = editPath ? (events.find(e => e.path === editPath)?.data?.datum || '').slice(0, 7) : null;
+  const count = (teller[maandKey] || 0) - (eigenMaand === maandKey ? 1 : 0);
+
+  if (count >= MAX_PER_MAAND) {
+    const maandLabel = new Date(maandKey + '-15').toLocaleDateString('nl-BE', { month:'long', year:'numeric' });
+    tekstEl.textContent = `Je speelt al ${count}× in ${maandLabel}. Dit is een uitzondering op je max. ${MAX_PER_MAAND}/maand.`;
+    warnEl.classList.remove('hidden');
+  } else {
+    warnEl.classList.add('hidden');
   }
 }
 function clearFilter() {
@@ -1074,6 +1148,7 @@ function fillForm(d) {
     });
   }
   updatePrijs();
+  checkMaandlimiet();
 }
 
 // ── Form: read ────────────────────────────────
