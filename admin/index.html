@@ -1199,21 +1199,39 @@ async function saveEvent() {
       message: editPath ? `Boeking bijgewerkt: ${data.naam}` : `Nieuwe boeking: ${data.naam}`,
       content: encoded, branch: BRANCH,
     };
+    let result;
     if (editPath && editPath !== newPath) {
       // Bestandsnaam veranderd: verwijder oud, maak nieuw aan
       const oldSha = await ghGetSha(editPath);
       if (oldSha) await ghDel(`/contents/${editPath}`, oldSha, `Boeking hernoemd: ${editPath}`);
-      await ghPut(`/contents/${newPath}`, body);
+      result = await ghPut(`/contents/${newPath}`, body);
+      // Lokale array bijwerken: oud verwijderen, nieuw toevoegen
+      events = events.filter(e => e.path !== editPath);
+      events.push({ path: newPath, sha: result?.content?.sha || '', data });
     } else if (editPath) {
-      // Zelfde bestand bijwerken: haal actuele SHA op om conflicten te vermijden
+      // Zelfde bestand bijwerken
       const currentSha = await ghGetSha(editPath);
       if (currentSha) body.sha = currentSha;
-      await ghPut(`/contents/${editPath}`, body);
+      result = await ghPut(`/contents/${editPath}`, body);
+      // Lokale array bijwerken
+      const idx = events.findIndex(e => e.path === editPath);
+      const newSha = result?.content?.sha || currentSha || '';
+      if (idx >= 0) events[idx] = { path: editPath, sha: newSha, data };
+      else events.push({ path: editPath, sha: newSha, data });
     } else {
-      await ghPut(`/contents/${newPath}`, body);
+      result = await ghPut(`/contents/${newPath}`, body);
+      // Nieuw event toevoegen aan lokale array
+      events.push({ path: newPath, sha: result?.content?.sha || '', data });
     }
+    // Sorteer op datum
+    events.sort((a, b) => (a.data.datum || '') < (b.data.datum || '') ? -1 : 1);
+
     msgEl.textContent = '✓ Opgeslagen';
-    setTimeout(showList, 800);
+    // Direct naar lijst met lokale data — geen wachten op GitHub
+    show('view-list');
+    renderList();
+    // Stil op de achtergrond verversen na 4s (GitHub heeft verwerkingstijd nodig)
+    setTimeout(() => loadEvents(), 4000);
   } catch (err) {
     msgEl.textContent = '';
     alert('Fout bij opslaan: ' + err.message);
@@ -1222,12 +1240,17 @@ async function saveEvent() {
 
 // ── Delete ────────────────────────────────────
 async function deleteEvent() {
-  if (!editPath || !editSha) return;
+  if (!editPath) return;
   const naam = document.getElementById('f-naam').value || editPath;
   if (!confirm(`"${naam}" definitief verwijderen?`)) return;
   try {
-    await ghDel(`/contents/${editPath}`, editSha, `Boeking verwijderd: ${naam}`);
-    showList();
+    const sha = await ghGetSha(editPath);
+    if (sha) await ghDel(`/contents/${editPath}`, sha, `Boeking verwijderd: ${naam}`);
+    // Direct uit lokale array verwijderen
+    events = events.filter(e => e.path !== editPath);
+    show('view-list');
+    renderList();
+    setTimeout(() => loadEvents(), 4000);
   } catch (err) { alert('Fout bij verwijderen: ' + err.message); }
 }
 
