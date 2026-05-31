@@ -7,10 +7,10 @@ thema: nee
 thema_oms: /
 gasten: 120
 doelpubliek: Gemengd
-afspraak_datum: 
-afspraak_type: 
+afspraak_datum: 2026-05-28
+afspraak_type: fysiek
 afspraak_email: 
-afspraak_adres: 
+afspraak_adres: Zonhoven
 geluid_nodig: eigen
 licht_nodig: eigen
 discobooth: aanwezig
