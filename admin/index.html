@@ -1244,9 +1244,12 @@ async function deleteEvent() {
   const naam = document.getElementById('f-naam').value || editPath;
   if (!confirm(`"${naam}" definitief verwijderen?`)) return;
   try {
-    const sha = await ghGetSha(editPath);
-    if (sha) await ghDel(`/contents/${editPath}`, sha, `Boeking verwijderd: ${naam}`);
-    // Direct uit lokale array verwijderen
+    // SHA: eerst uit lokale cache, dan vers van GitHub
+    const cached = events.find(e => e.path === editPath);
+    const sha = cached?.sha || await ghGetSha(editPath);
+    if (!sha) throw new Error('Bestand niet gevonden op GitHub — vernieuw de pagina en probeer opnieuw.');
+    await ghDel(`/contents/${editPath}`, sha, `Boeking verwijderd: ${naam}`);
+    // Pas na bevestigde delete de lokale array bijwerken
     events = events.filter(e => e.path !== editPath);
     show('view-list');
     renderList();
