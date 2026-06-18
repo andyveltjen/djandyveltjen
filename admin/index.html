@@ -1294,17 +1294,14 @@ function esc(s) {
 }
 
 // ── GoatCounter stats ─────────────────────────
-const GC_SITE = 'aveltjen';
-
 async function loadGcStats() {
   try {
-    const r = await fetch(`https://${GC_SITE}.goatcounter.com/counter/%2F.json`);
+    const r = await fetch('/stats.json?_=' + Date.now());
     if (!r.ok) return;
     const j = await r.json();
-    document.getElementById('gc-total').textContent  = (j.count        ?? '—').toLocaleString('nl');
-    document.getElementById('gc-unique').textContent = (j.count_unique ?? '—').toLocaleString('nl');
+    document.getElementById('gc-total').textContent  = j.count        ?? '—';
+    document.getElementById('gc-unique').textContent = j.count_unique ?? '—';
   } catch { /* stil falen */ }
-  document.getElementById('gc-link').href = `https://${GC_SITE}.goatcounter.com`;
 }
 
 // ── Init ──────────────────────────────────────
