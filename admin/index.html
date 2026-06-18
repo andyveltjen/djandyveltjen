@@ -1315,12 +1315,12 @@ async function loadGcStats() {
 
   async function hits(start, end) {
     try {
-      const r = await fetch(`${base}/stats/hits?start=${start}&end=${end}&daily=false`, {
+      const r = await fetch(`${base}/stats/total?start=${start}&end=${end}`, {
         headers: { Authorization: `Bearer ${gcToken}` },
       });
       if (!r.ok) return '—';
       const j = await r.json();
-      return (j.total ?? '—').toLocaleString('nl');
+      return (j.total ?? 0).toLocaleString('nl');
     } catch { return '—'; }
   }
 
