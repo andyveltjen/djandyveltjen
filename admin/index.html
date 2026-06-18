@@ -101,20 +101,12 @@
       <div class="text-xs font-semibold text-gray-400 uppercase tracking-wide w-full sm:w-auto">Website bezoekers</div>
       <div class="flex gap-6 flex-wrap">
         <div class="text-center">
-          <div id="gc-today" class="text-2xl font-black" style="color:#E8177A">—</div>
-          <div class="text-xs text-gray-400 mt-0.5">Vandaag</div>
+          <div id="gc-total" class="text-2xl font-black" style="color:#E8177A">—</div>
+          <div class="text-xs text-gray-400 mt-0.5">Totaal paginabezoeken</div>
         </div>
         <div class="text-center">
-          <div id="gc-week" class="text-2xl font-black text-gray-700">—</div>
-          <div class="text-xs text-gray-400 mt-0.5">Afgelopen 7 dagen</div>
-        </div>
-        <div class="text-center">
-          <div id="gc-month" class="text-2xl font-black text-gray-700">—</div>
-          <div class="text-xs text-gray-400 mt-0.5">Afgelopen 30 dagen</div>
-        </div>
-        <div class="text-center">
-          <div id="gc-total" class="text-2xl font-black text-gray-700">—</div>
-          <div class="text-xs text-gray-400 mt-0.5">Totaal</div>
+          <div id="gc-unique" class="text-2xl font-black text-gray-700">—</div>
+          <div class="text-xs text-gray-400 mt-0.5">Unieke bezoekers</div>
         </div>
       </div>
       <a id="gc-link" href="https://aveltjen.goatcounter.com" target="_blank"
@@ -1302,39 +1294,16 @@ function esc(s) {
 }
 
 // ── GoatCounter stats ─────────────────────────
-const GC_SITE  = 'aveltjen';
-const GC_TOKEN = 'm4fajr0tp35f1tol81cbt95qsqz1r00ksst5t2dgg1bm7m2w4';
+const GC_SITE = 'aveltjen';
 
 async function loadGcStats() {
-  const gcToken = GC_TOKEN;
-  const base = `https://${GC_SITE}.goatcounter.com/api/v0`;
-  const today = new Date().toISOString().slice(0,10);
-  const d7    = new Date(Date.now() - 6*864e5).toISOString().slice(0,10);
-  const d30   = new Date(Date.now() - 29*864e5).toISOString().slice(0,10);
-  const epoch = '2000-01-01';
-
-  async function hits(start, end) {
-    try {
-      const r = await fetch(`${base}/stats/total?start=${start}&end=${end}`, {
-        headers: { Authorization: `Bearer ${gcToken}` },
-      });
-      if (!r.ok) return '—';
-      const j = await r.json();
-      return (j.total ?? 0).toLocaleString('nl');
-    } catch { return '—'; }
-  }
-
-  const [t, w, m, all] = await Promise.all([
-    hits(today, today),
-    hits(d7,    today),
-    hits(d30,   today),
-    hits(epoch, today),
-  ]);
-
-  document.getElementById('gc-today').textContent = t;
-  document.getElementById('gc-week').textContent  = w;
-  document.getElementById('gc-month').textContent = m;
-  document.getElementById('gc-total').textContent = all;
+  try {
+    const r = await fetch(`https://${GC_SITE}.goatcounter.com/counter/%2F.json`);
+    if (!r.ok) return;
+    const j = await r.json();
+    document.getElementById('gc-total').textContent  = (j.count        ?? '—').toLocaleString('nl');
+    document.getElementById('gc-unique').textContent = (j.count_unique ?? '—').toLocaleString('nl');
+  } catch { /* stil falen */ }
   document.getElementById('gc-link').href = `https://${GC_SITE}.goatcounter.com`;
 }
 
