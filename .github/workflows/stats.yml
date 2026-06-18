@@ -2,7 +2,7 @@ name: Haal GoatCounter stats op
 
 on:
   schedule:
-    - cron: '0 * * * *'   # elk uur
+    - cron: '*/5 * * * *'  # elke 5 minuten
   workflow_dispatch:        # ook handmatig te starten
 
 permissions:
