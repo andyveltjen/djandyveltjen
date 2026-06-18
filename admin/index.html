@@ -64,11 +64,6 @@
         <input id="inp-token" type="password" class="field-input" placeholder="ghp_…"
                onkeydown="if(event.key==='Enter')login()"/>
       </div>
-      <div>
-        <label class="field-label">GoatCounter API Token <span class="text-gray-300">(optioneel)</span></label>
-        <input id="inp-gc-token" type="password" class="field-input" placeholder="…"
-               onkeydown="if(event.key==='Enter')login()"/>
-      </div>
       <p id="login-err" class="hidden text-red-500 text-xs text-center"></p>
       <button onclick="login()" class="w-full py-3 rounded-xl text-white font-bold text-sm" style="background:#E8177A">
         Inloggen
@@ -567,8 +562,6 @@ async function login() {
     });
     if (!res.ok) throw new Error();
     sessionStorage.setItem('gh_token', token);
-    const gc = document.getElementById('inp-gc-token').value.trim();
-    if (gc) sessionStorage.setItem('gc_token', gc);
     showList();
   } catch {
     token = '';
@@ -579,7 +572,7 @@ async function login() {
 function logout() {
   token = '';
   sessionStorage.removeItem('gh_token');
-  sessionStorage.removeItem('gc_token');
+
   show('view-login');
 }
 
@@ -1309,11 +1302,11 @@ function esc(s) {
 }
 
 // ── GoatCounter stats ─────────────────────────
-const GC_SITE = 'aveltjen'; // ← vervang door jouw GoatCounter subdomain
+const GC_SITE  = 'aveltjen';
+const GC_TOKEN = 'm4fajr0tp35f1tol81cbt95qsqz1r00ksst5t2dgg1bm7m2w4';
 
 async function loadGcStats() {
-  const gcToken = sessionStorage.getItem('gc_token');
-  if (!gcToken) return;
+  const gcToken = GC_TOKEN;
   const base = `https://${GC_SITE}.goatcounter.com/api/v0`;
   const today = new Date().toISOString().slice(0,10);
   const d7    = new Date(Date.now() - 6*864e5).toISOString().slice(0,10);
